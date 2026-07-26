@@ -9,7 +9,7 @@ Write-Host "Syncing files from XAMPP directory to Documents..." -ForegroundColor
 
 # /MIR mirrors the directory tree.
 # We exclude .git and vendor because we don't want to copy massive vendor folders or ruin git history.
-robocopy $SourceDir $DestDir /MIR /XD .git vendor /XF .env /R:1 /W:1
+robocopy $SourceDir $DestDir /MIR /XD .git /XF .env /R:1 /W:1
 
 if ($LASTEXITCODE -ge 8) {
     Write-Host "Error syncing files. Robocopy exit code: $LASTEXITCODE" -ForegroundColor Red
