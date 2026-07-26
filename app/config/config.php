@@ -13,13 +13,13 @@ if (in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1'])) {
     define('DB_PASS', '');
     define('DB_NAME', 'isec_db');
 } else {
-    define('DB_HOST', 'localhost');
-    define('DB_USER', 'root');
+    define('APP_ENV', 'production');
+    // PUT YOUR CPANEL DB CREDENTIALS BELOW THIS LINE:
+    define('DB_USER', 'isecltd1_admin');
     define('DB_PASS', '');
-    define('DB_NAME', 'isec_db');
+    define('DB_NAME', 'isecltd1_isecltd_db');
 }
 define('DB_HOST', 'localhost');
-
 // Dynamic Base URL and Subfolder detection
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? 80) == 443) ? "https://" : "http://";
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
