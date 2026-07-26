@@ -16,7 +16,7 @@ if (in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1'])) {
     define('APP_ENV', 'production');
     // PUT YOUR CPANEL DB CREDENTIALS BELOW THIS LINE:
     define('DB_USER', 'isecltd1_admin');
-    define('DB_PASS', '');
+    define('DB_PASS', 'Hephzibah2016.');
     define('DB_NAME', 'isecltd1_isecltd_db');
 }
 define('DB_HOST', 'localhost');
