@@ -57,8 +57,8 @@
                             <?php foreach (explode(',', $project['gallery_images']) as $imagePath): ?>
                                 <?php if (!empty(trim($imagePath))): ?>
                                     <div class="group relative aspect-square bg-slate-100 dark:bg-slate-850 rounded-2xl overflow-hidden cursor-pointer border border-slate-200 dark:border-slate-800 shadow-sm"
-                                         @click="activeImage = '<?= asset(trim($imagePath)) ?>'; lightboxOpen = true">
-                                        <img src="<?= asset(trim($imagePath)) ?>" alt="Project Photo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                         @click="activeImage = '<?= url(trim($imagePath)) ?>'; lightboxOpen = true">
+                                        <img src="<?= url(trim($imagePath)) ?>" alt="Project Photo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                         <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
                                             <span class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
                                         </div>
