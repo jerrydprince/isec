@@ -6,13 +6,19 @@
 // Application Info
 define('APP_NAME', 'Integrated Systems Efficiency Consults Limited');
 define('APP_SHORT_NAME', 'ISEC');
-define('APP_ENV', 'development'); // development, production
-
-// Database Configuration
+// Dynamic Database Configuration (Local vs Live)
+if (in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1'])) {
+    define('APP_ENV', 'development');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+    define('DB_NAME', 'isec_db');
+} else {
+    define('DB_HOST', 'localhost');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+    define('DB_NAME', 'isec_db');
+}
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'isec_db');
 
 // Dynamic Base URL and Subfolder detection
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? 80) == 443) ? "https://" : "http://";
