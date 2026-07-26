@@ -3,21 +3,18 @@
  * ISEC Front Controller Entry Point
  */
 
-// 1. Define Core Path (Handles cPanel 'isec_app' vs Local XAMPP structure)
-$corePath = is_dir(__DIR__ . '/../isec_app') ? __DIR__ . '/../isec_app' : dirname(__DIR__);
-
-// 2. Load Autoloader & Helpers
-require_once $corePath . '/vendor/autoload.php';
-require_once $corePath . '/app/config/config.php';
-require_once $corePath . '/app/Helpers/helpers.php';
+// 1. Load Autoloader & Helpers
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../app/config/config.php';
+require_once __DIR__ . '/../app/Helpers/helpers.php';
 
 use App\Core\App;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\AdminOnlyMiddleware;
 use App\Middleware\CSRFMiddleware;
 
-// 3. Initialize Application
-$app = new App($corePath);
+// 2. Initialize Application
+$app = new App(dirname(__DIR__));
 
 // 3. Define Routes
 $router = $app->router;
