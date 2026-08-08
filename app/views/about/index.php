@@ -257,15 +257,15 @@
                 <div class="bg-white dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-300" data-aos="fade-up">
                     <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-accent to-primary p-1 mb-6">
                         <div class="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden border-4 border-white dark:border-slate-950">
-                            <?php if (!empty($member['image_path'])): ?>
-                                <img src="<?= url($member['image_path']) ?>" alt="<?= e($member['name']) ?>" class="w-full h-full object-cover">
+                            <?php if (!empty($member['image'])): ?>
+                                <img src="<?= url('assets/uploads/team/' . $member['image']) ?>" alt="<?= e($member['name']) ?>" class="w-full h-full object-cover">
                             <?php else: ?>
                                 <span class="text-4xl font-extrabold text-slate-300 dark:text-slate-700 group-hover:text-accent transition-colors"><?= strtoupper(substr(e($member['name']), 0, 1)) ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
                     <h3 class="text-2xl font-bold text-primary dark:text-white mb-1"><?= e($member['name']) ?></h3>
-                    <span class="text-xs font-bold text-accent uppercase tracking-widest mb-4 block"><?= e($member['role']) ?></span>
+                    <span class="text-xs font-bold text-accent uppercase tracking-widest mb-4 block"><?= e($member['position']) ?></span>
                     <p class="text-slate-500 dark:text-slate-400 font-light leading-relaxed">
                         <?= e($member['bio'] ?? '') ?>
                     </p>
