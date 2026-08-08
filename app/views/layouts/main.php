@@ -67,8 +67,28 @@ function getMobileClass($path, $currentUri) {
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     
     <!-- Tailwind CSS (Play CDN) -->
+    <style>
+        /* Hide body until Tailwind CSS is loaded to prevent FOUC (Flash of Unstyled Content) twitching */
+        body { visibility: hidden; opacity: 0; transition: opacity 0.1s ease-in; }
+    </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // Wait for Tailwind to inject its style tag, then reveal the body smoothly
+        const observer = new MutationObserver((mutations) => {
+            if (document.getElementById('tailwind-play')) {
+                document.body.style.visibility = 'visible';
+                document.body.style.opacity = '1';
+                observer.disconnect();
+            }
+        });
+        observer.observe(document.head, { childList: true });
+        
+        // Fallback reveal
+        window.addEventListener('load', () => {
+            document.body.style.visibility = 'visible';
+            document.body.style.opacity = '1';
+        });
+
         tailwind.config = {
             darkMode: 'class',
             theme: {
