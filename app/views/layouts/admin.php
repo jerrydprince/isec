@@ -115,7 +115,12 @@ $currentPath = $request->getPath();
                         <i class="fa-solid fa-award text-base"></i> Certificates Manager
                     </a>
                     <a href="<?= url('/admin/cms-pages') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/cms-pages' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-file-pen text-base"></i> Pages Content CMS
+                        <i class="fa-solid fa-file-lines w-5 text-center text-slate-400"></i>
+                        <span>Static Text Blocks</span>
+                    </a>
+                    <a href="<?= url('/admin/dynamic-pages') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/dynamic-pages') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                        <i class="fa-solid fa-layer-group w-5 text-center text-slate-400"></i>
+                        <span>Dynamic Pages</span>
                     </a>
                     <a href="<?= url('/admin/team') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/team') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
                         <i class="fa-solid fa-people-group text-base"></i> Leadership Board

@@ -398,4 +398,22 @@ class HomeController extends Controller {
             'searched' => $searched
         ]);
     }
+
+    /**
+     * Dynamic Pages Route
+     */
+    public function dynamicPage(Request $request, Response $response, array $params): string {
+        $slug = $params['slug'] ?? '';
+        $page = \App\Models\SitePage::findBySlugPublished($slug);
+
+        if (!$page) {
+            $response->setStatusCode(404);
+            return \App\Core\View::render('errors/404', ['title' => 'Page Not Found']);
+        }
+
+        return $this->render('page/show', [
+            'title' => $page['title'] . ' - ISEC',
+            'page' => $page
+        ]);
+    }
 }

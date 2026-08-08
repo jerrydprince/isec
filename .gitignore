@@ -1,3 +1,8 @@
 
 /isec_deploy.zip
 /.env
+
+*.zip
+insert.sql
+scratch_scraper.php
+scratch_dynamic_pages.sql

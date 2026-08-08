@@ -47,6 +47,7 @@ $router->get('/downloads/track/{id}', [\App\Controllers\HomeController::class, '
 $router->get('/contact', [\App\Controllers\HomeController::class, 'contact']);
 $router->post('/contact', [\App\Controllers\HomeController::class, 'contactSubmit'], [CSRFMiddleware::class]);
 $router->post('/newsletter', [\App\Controllers\HomeController::class, 'newsletterSubmit'], [CSRFMiddleware::class]);
+$router->get('/page/{slug}', [\App\Controllers\HomeController::class, 'dynamicPage']);
 
 // --- Authentication Routes ---
 $router->get('/admin/login', [\App\Controllers\AuthController::class, 'login']);
@@ -111,6 +112,14 @@ $router->get('/admin/certificates/delete/{id}', [\App\Controllers\AdminControlle
 // Admin CMS Dynamic Page Editor
 $router->get('/admin/cms-pages', [\App\Controllers\AdminController::class, 'cmsPages'], [AuthMiddleware::class]);
 $router->post('/admin/cms-pages', [\App\Controllers\AdminController::class, 'cmsPagesUpdate'], [AuthMiddleware::class, CSRFMiddleware::class]);
+
+// Admin Dynamic Pages CRUD
+$router->get('/admin/dynamic-pages', [\App\Controllers\AdminController::class, 'dynamicPages'], [AuthMiddleware::class]);
+$router->get('/admin/dynamic-pages/create', [\App\Controllers\AdminController::class, 'dynamicPageCreate'], [AuthMiddleware::class]);
+$router->post('/admin/dynamic-pages/store', [\App\Controllers\AdminController::class, 'dynamicPageStore'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/dynamic-pages/edit/{id}', [\App\Controllers\AdminController::class, 'dynamicPageEdit'], [AuthMiddleware::class]);
+$router->post('/admin/dynamic-pages/update/{id}', [\App\Controllers\AdminController::class, 'dynamicPageUpdate'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/dynamic-pages/delete/{id}', [\App\Controllers\AdminController::class, 'dynamicPageDelete'], [AuthMiddleware::class]);
 
 // Admin Leadership Team CRUD
 $router->get('/admin/team', [\App\Controllers\AdminController::class, 'team'], [AuthMiddleware::class]);

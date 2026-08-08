@@ -7,6 +7,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Models\Service;
+use App\Models\ServiceCategory;
 use App\Models\Project;
 use App\Models\Blog;
 use App\Models\Message;
@@ -1580,5 +1581,139 @@ class AdminController extends Controller {
         }
 
         $response->redirect('/admin/users');
+    }
+
+    // --- Dynamic Pages CRUD ---
+
+    public function dynamicPages(Request $request, Response $response): string {
+        $this->checkPermission('manage_settings');
+        
+        $pages = \App\Models\SitePage::query("SELECT * FROM `dynamic_pages` ORDER BY id DESC");
+        
+        return $this->render('admin/dynamic_pages/index', [
+            'title' => 'Manage Dynamic Pages - ISEC CMS',
+            'pages' => $pages
+        ]);
+    }
+
+    public function dynamicPageCreate(Request $request, Response $response): string {
+        $this->checkPermission('manage_settings');
+        return $this->render('admin/dynamic_pages/create', [
+            'title' => 'Create New Page - ISEC CMS'
+        ]);
+    }
+
+    public function dynamicPageStore(Request $request, Response $response): void {
+        $this->checkPermission('manage_settings');
+        $session = new Session();
+
+        $title = trim($request->get('title'));
+        $content = trim($request->get('content'));
+        $status = $request->get('status') === 'published' ? 'published' : 'draft';
+
+        if (empty($title)) {
+            $session->setFlash('error', 'Page title is required.');
+            $response->redirect('/admin/dynamic-pages/create');
+            return;
+        }
+
+        $slug = \App\Core\Helpers::generateSlug($title);
+        
+        // Ensure unique slug
+        $existing = \App\Models\SitePage::query("SELECT id FROM dynamic_pages WHERE slug = :slug", ['slug' => $slug]);
+        if (count($existing) > 0) {
+            $slug = $slug . '-' . time();
+        }
+
+        $id = \App\Models\SitePage::create([
+            'title' => $title,
+            'slug' => $slug,
+            'content' => $content,
+            'status' => $status
+        ]);
+
+        if ($id) {
+            AuditLog::log(current_user()['id'], 'Create Dynamic Page', "Created page: $title");
+            $session->setFlash('success', 'Page created successfully.');
+        } else {
+            $session->setFlash('error', 'Failed to create page.');
+        }
+
+        $response->redirect('/admin/dynamic-pages');
+    }
+
+    public function dynamicPageEdit(Request $request, Response $response, array $params): string {
+        $this->checkPermission('manage_settings');
+        $id = (int)($params['id'] ?? 0);
+        
+        $page = \App\Models\SitePage::find($id);
+        
+        if (!$page) {
+            (new Session())->setFlash('error', 'Page not found.');
+            $response->redirect('/admin/dynamic-pages');
+            return '';
+        }
+
+        return $this->render('admin/dynamic_pages/edit', [
+            'title' => 'Edit Page - ISEC CMS',
+            'page' => $page
+        ]);
+    }
+
+    public function dynamicPageUpdate(Request $request, Response $response, array $params): void {
+        $this->checkPermission('manage_settings');
+        $session = new Session();
+        $id = (int)($params['id'] ?? 0);
+        
+        $page = \App\Models\SitePage::find($id);
+        if (!$page) {
+            $session->setFlash('error', 'Page not found.');
+            $response->redirect('/admin/dynamic-pages');
+            return;
+        }
+
+        $title = trim($request->get('title'));
+        $content = trim($request->get('content'));
+        $status = $request->get('status') === 'published' ? 'published' : 'draft';
+
+        if (empty($title)) {
+            $session->setFlash('error', 'Page title is required.');
+            $response->redirect("/admin/dynamic-pages/$id/edit");
+            return;
+        }
+
+        $slug = \App\Core\Helpers::generateSlug($title);
+        
+        // Ensure unique slug
+        $existing = \App\Models\SitePage::query("SELECT id FROM dynamic_pages WHERE slug = :slug AND id != :id", ['slug' => $slug, 'id' => $id]);
+        if (count($existing) > 0) {
+            $slug = $slug . '-' . time();
+        }
+
+        \App\Models\SitePage::update($id, [
+            'title' => $title,
+            'slug' => $slug,
+            'content' => $content,
+            'status' => $status
+        ]);
+
+        AuditLog::log(current_user()['id'], 'Update Dynamic Page', "Updated page: $title");
+        $session->setFlash('success', 'Page updated successfully.');
+        $response->redirect('/admin/dynamic-pages');
+    }
+
+    public function dynamicPageDelete(Request $request, Response $response, array $params): void {
+        $this->checkPermission('manage_settings');
+        $session = new Session();
+        $id = (int)($params['id'] ?? 0);
+        
+        $page = \App\Models\SitePage::find($id);
+        if ($page) {
+            \App\Models\SitePage::delete($id);
+            AuditLog::log(current_user()['id'], 'Delete Dynamic Page', "Deleted page: " . $page['title']);
+            $session->setFlash('success', 'Page deleted successfully.');
+        }
+
+        $response->redirect('/admin/dynamic-pages');
     }
 }

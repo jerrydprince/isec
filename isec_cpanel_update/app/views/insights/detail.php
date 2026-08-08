@@ -1,0 +1,67 @@
+<!-- Insight Detail Header -->
+<section class="py-24 relative overflow-hidden bg-slate-900 dark:bg-slate-950 text-white">
+    <div class="absolute inset-0 bg-gradient-to-tr from-primary to-accent opacity-30 z-0"></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-4">
+        <a href="<?= url('/insights') ?>" class="inline-flex items-center gap-2 text-xs font-bold text-accent uppercase tracking-widest hover:text-white transition-colors mb-4"><i class="fa-solid fa-arrow-left-long"></i> Back to Knowledge Hub</a>
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+            <span class="px-2.5 py-0.5 rounded bg-accent/20 text-accent"><?= e($insight['type']) ?></span>
+            <span>•</span>
+            <span>Category: <?= e($insight['category_name']) ?></span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight"><?= e($insight['title']) ?></h1>
+        <div class="flex items-center gap-3 text-xs font-medium text-slate-350 pt-2">
+            <span class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center font-bold text-white"><?= substr($insight['author_name'], 0, 1) ?></span>
+            <span>By <?= e($insight['author_name']) ?></span>
+            <span>•</span>
+            <span>Published: <?= date('F d, Y', strtotime($insight['published_at'])) ?></span>
+        </div>
+    </div>
+</section>
+
+<!-- Article Content -->
+<section class="py-24 bg-white dark:bg-slate-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Main Rich Text Content area -->
+        <article class="prose prose-slate dark:prose-invert max-w-none text-slate-650 dark:text-slate-350 leading-relaxed font-light text-sm space-y-6">
+            <!-- Custom CSS injected dynamically to support standard styling inside unescaped HTML database queries -->
+            <style>
+                article h4 { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; margin-top: 2rem; color: #0f172a; }
+                .dark article h4 { color: #f8fafc; }
+                article p { margin-bottom: 1.25rem; }
+                article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+            </style>
+            
+            <?= $insight['content'] // Unescaped since it is CMS generated rich text content ?>
+        </article>
+
+        <!-- Dynamic Share bar -->
+        <div class="border-t border-slate-100 dark:border-slate-850 pt-8 mt-12 flex flex-wrap justify-between items-center gap-4 text-xs font-bold text-slate-400">
+            <div class="flex items-center gap-3">
+                <span>Share this:</span>
+                <a href="#" class="hover:text-accent"><i class="fa-brands fa-linkedin text-base"></i></a>
+                <a href="#" class="hover:text-accent"><i class="fa-brands fa-x-twitter text-base"></i></a>
+            </div>
+            <a href="<?= url('/insights') ?>" class="text-accent hover:underline">Back to insights list</a>
+        </div>
+
+        <!-- Related Insights -->
+        <?php if (!empty($related)): ?>
+            <div class="border-t border-slate-100 dark:border-slate-850 pt-16 mt-16">
+                <h3 class="text-2xl font-bold text-primary dark:text-white mb-8">Related Publications</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <?php foreach ($related as $rel): ?>
+                        <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-850 hover:border-accent hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[9px] font-bold text-accent uppercase tracking-widest mb-2 block"><?= e($rel['type']) ?></span>
+                                <h4 class="font-bold text-sm text-primary dark:text-white mb-2 line-clamp-2"><a href="<?= url('/insights/' . $rel['slug']) ?>"><?= e($rel['title']) ?></a></h4>
+                            </div>
+                            <a href="<?= url('/insights/' . $rel['slug']) ?>" class="text-[10px] font-bold text-accent inline-flex items-center gap-1.5 hover:gap-3 transition-all mt-4">Read <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+    </div>
+</section>
