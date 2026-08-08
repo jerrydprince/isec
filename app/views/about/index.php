@@ -251,34 +251,31 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-            <!-- Dr. Jerry Nosike -->
-            <div class="bg-white dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-300" data-aos="fade-right">
-                <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-accent to-primary p-1 mb-6">
-                    <div class="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden border-4 border-white dark:border-slate-950">
-                        <span class="text-4xl font-extrabold text-slate-300 dark:text-slate-700 group-hover:text-accent transition-colors">D</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
+            <?php if (!empty($team)): ?>
+                <?php foreach ($team as $member): ?>
+                <div class="bg-white dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-300" data-aos="fade-up">
+                    <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-accent to-primary p-1 mb-6">
+                        <div class="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden border-4 border-white dark:border-slate-950">
+                            <?php if (!empty($member['image_path'])): ?>
+                                <img src="<?= url($member['image_path']) ?>" alt="<?= e($member['name']) ?>" class="w-full h-full object-cover">
+                            <?php else: ?>
+                                <span class="text-4xl font-extrabold text-slate-300 dark:text-slate-700 group-hover:text-accent transition-colors"><?= strtoupper(substr(e($member['name']), 0, 1)) ?></span>
+                            <?php endif; ?>
+                        </div>
                     </div>
+                    <h3 class="text-2xl font-bold text-primary dark:text-white mb-1"><?= e($member['name']) ?></h3>
+                    <span class="text-xs font-bold text-accent uppercase tracking-widest mb-4 block"><?= e($member['role']) ?></span>
+                    <p class="text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                        <?= e($member['bio'] ?? '') ?>
+                    </p>
                 </div>
-                <h3 class="text-2xl font-bold text-primary dark:text-white mb-1">Dr. Jerry Nosike</h3>
-                <span class="text-xs font-bold text-accent uppercase tracking-widest mb-4 block">Managing Director</span>
-                <p class="text-slate-500 dark:text-slate-400 font-light leading-relaxed">
-                    Over 20 years of experience in enterprise systems consulting, e-governance, and large-scale public sector reforms across West Africa.
-                </p>
-            </div>
-
-            <!-- Engr. Sarah Ndukwe -->
-            <div class="bg-white dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-300" data-aos="fade-left">
-                <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-accent to-primary p-1 mb-6">
-                    <div class="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden border-4 border-white dark:border-slate-950">
-                        <span class="text-4xl font-extrabold text-slate-300 dark:text-slate-700 group-hover:text-accent transition-colors">E</span>
-                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-span-full text-center text-slate-500 dark:text-slate-400 font-light">
+                    Leadership team profiles are currently being updated.
                 </div>
-                <h3 class="text-2xl font-bold text-primary dark:text-white mb-1">Engr. Sarah Ndukwe</h3>
-                <span class="text-xs font-bold text-accent uppercase tracking-widest mb-4 block">Chief Operating Officer</span>
-                <p class="text-slate-500 dark:text-slate-400 font-light leading-relaxed">
-                    Expert in systems architecture, engineering consultancy, and digital workspace deployment with a focus on process automation.
-                </p>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>
