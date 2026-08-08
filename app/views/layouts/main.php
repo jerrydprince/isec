@@ -120,6 +120,10 @@ function getMobileClass($path, $currentUri) {
                 radial-gradient(at 100% 100%, hsla(263,73%,40%,1) 0px, transparent 50%),
                 radial-gradient(at 0% 100%, hsla(201,100%,19%,1) 0px, transparent 50%);
         }
+        html {
+            overflow-y: scroll; /* Prevents scrollbar twitching between pages */
+        }
+        [x-cloak] { display: none !important; }
     </style>
     
     <!-- Alpine.js -->
@@ -135,9 +139,9 @@ function getMobileClass($path, $currentUri) {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center">
+                <div class="flex-shrink-0 flex items-center" style="width: 95px; height: 40px;">
                     <a href="<?= url('/') ?>" class="flex items-center">
-                        <img src="<?= asset('images/logo.png') ?>?v=5" alt="ISEC Logo" class="h-10 w-auto object-contain dark:invert transition-all" />
+                        <img src="<?= asset('images/logo.png') ?>?v=5" alt="ISEC Logo" width="1024" height="435" style="aspect-ratio: 1024/435;" class="h-10 w-auto object-contain dark:invert transition-all" />
                     </a>
                 </div>
                 
@@ -155,8 +159,8 @@ function getMobileClass($path, $currentUri) {
                 <!-- Icons & Dark Mode Toggle -->
                 <div class="hidden md:flex items-center space-x-4">
                     <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors text-slate-600 dark:text-slate-300">
-                        <i x-show="!darkMode" class="fa-solid fa-moon text-lg"></i>
-                        <i x-show="darkMode" class="fa-solid fa-sun text-lg"></i>
+                        <i x-cloak x-show="!darkMode" class="fa-solid fa-moon text-lg"></i>
+                        <i x-cloak x-show="darkMode" class="fa-solid fa-sun text-lg"></i>
                     </button>
                     <a href="<?= url('/contact') ?>" class="bg-gradient-to-r from-primary to-secondary text-white font-semibold px-5 py-2.5 rounded-full text-sm shadow-md hover:shadow-lg hover:scale-105 transition-all">
                         Request Quote
@@ -166,8 +170,8 @@ function getMobileClass($path, $currentUri) {
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center gap-3">
                     <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300">
-                        <i x-show="!darkMode" class="fa-solid fa-moon text-lg"></i>
-                        <i x-show="darkMode" class="fa-solid fa-sun text-lg"></i>
+                        <i x-cloak x-show="!darkMode" class="fa-solid fa-moon text-lg"></i>
+                        <i x-cloak x-show="darkMode" class="fa-solid fa-sun text-lg"></i>
                     </button>
                     <button @click="mobileMenu = !mobileMenu" class="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300">
                         <i :class="mobileMenu ? 'fa-solid fa-xmark text-2xl' : 'fa-solid fa-bars text-2xl'"></i>
