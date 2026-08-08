@@ -7,10 +7,18 @@
 define('APP_NAME', 'Integrated Systems Efficiency Consults Limited');
 define('APP_SHORT_NAME', 'ISEC');
 // Dynamic Database Configuration (Local vs Live)
+if (in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1', 'localhost:8000'])) {
     define('APP_ENV', 'development');
     define('DB_USER', 'root');
     define('DB_PASS', '');
     define('DB_NAME', 'isec_db');
+} else {
+    define('APP_ENV', 'production');
+    // PUT YOUR CPANEL DB CREDENTIALS BELOW THIS LINE:
+    define('DB_USER', 'isecltd1_jerry');
+    define('DB_PASS', 'Hephzibah2016.');
+    define('DB_NAME', 'isecltd1_isecltd_db');
+}
 define('DB_HOST', 'localhost');
 // Dynamic Base URL and Subfolder detection
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? 80) == 443) ? "https://" : "http://";
