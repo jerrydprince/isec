@@ -17,6 +17,19 @@ $accentColor = Settings::get('accent_color', '#0d9488');
 $session = new Session();
 $flashSuccess = $session->getFlash('success');
 $flashError = $session->getFlash('error');
+
+// Menu Active State Helpers
+$currentUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+function getDesktopClass($path, $currentUri) {
+    $urlPath = parse_url(url($path), PHP_URL_PATH);
+    $isActive = ($path === '/') ? ($currentUri === $urlPath || $currentUri === rtrim($urlPath, '/')) : (strpos($currentUri, $urlPath) === 0);
+    return $isActive ? 'text-sm font-semibold text-accent transition-colors' : 'text-sm font-semibold hover:text-accent transition-colors';
+}
+function getMobileClass($path, $currentUri) {
+    $urlPath = parse_url(url($path), PHP_URL_PATH);
+    $isActive = ($path === '/') ? ($currentUri === $urlPath || $currentUri === rtrim($urlPath, '/')) : (strpos($currentUri, $urlPath) === 0);
+    return $isActive ? 'block px-3 py-3 rounded-lg text-base font-medium bg-slate-200/50 dark:bg-slate-800/50 text-accent' : 'block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -118,7 +131,7 @@ $flashError = $session->getFlash('error');
 <body class="bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 font-body" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileMenu: false }" :class="{ 'dark': darkMode }">
 
     <!-- Sticky Navigation Glassmorphism -->
-    <nav class="sticky top-0 z-50 glassmorphism transition-all duration-300 shadow-sm">
+    <nav class="sticky top-0 z-50 glassmorphism shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <!-- Logo -->
@@ -130,13 +143,13 @@ $flashError = $session->getFlash('error');
                 
                 <!-- Desktop Nav Links -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="<?= url('/') ?>" class="text-sm font-semibold hover:text-accent transition-colors">Home</a>
-                    <a href="<?= url('/about') ?>" class="text-sm font-semibold hover:text-accent transition-colors">About Us</a>
-                    <a href="<?= url('/services') ?>" class="text-sm font-semibold hover:text-accent transition-colors">Services</a>
-                    <a href="<?= url('/projects') ?>" class="text-sm font-semibold hover:text-accent transition-colors">Case Studies</a>
-                    <a href="<?= url('/insights') ?>" class="text-sm font-semibold hover:text-accent transition-colors">Insights</a>
-                    <a href="<?= url('/careers') ?>" class="text-sm font-semibold hover:text-accent transition-colors">Careers</a>
-                    <a href="<?= url('/contact') ?>" class="text-sm font-semibold hover:text-accent transition-colors">Contact</a>
+                    <a href="<?= url('/') ?>" class="<?= getDesktopClass('/', $currentUri) ?>">Home</a>
+                    <a href="<?= url('/about') ?>" class="<?= getDesktopClass('/about', $currentUri) ?>">About Us</a>
+                    <a href="<?= url('/services') ?>" class="<?= getDesktopClass('/services', $currentUri) ?>">Services</a>
+                    <a href="<?= url('/projects') ?>" class="<?= getDesktopClass('/projects', $currentUri) ?>">Case Studies</a>
+                    <a href="<?= url('/insights') ?>" class="<?= getDesktopClass('/insights', $currentUri) ?>">Insights</a>
+                    <a href="<?= url('/careers') ?>" class="<?= getDesktopClass('/careers', $currentUri) ?>">Careers</a>
+                    <a href="<?= url('/contact') ?>" class="<?= getDesktopClass('/contact', $currentUri) ?>">Contact</a>
                 </div>
 
                 <!-- Icons & Dark Mode Toggle -->
@@ -166,13 +179,13 @@ $flashError = $session->getFlash('error');
         <!-- Mobile Menu Panel -->
         <div x-show="mobileMenu" x-transition.origin.top.right class="md:hidden glassmorphism border-t border-slate-200 dark:border-slate-800" style="display: none;">
             <div class="px-2 pt-2 pb-4 space-y-1 sm:px-3">
-                <a href="<?= url('/') ?>" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50">Home</a>
-                <a href="<?= url('/about') ?>" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50">About Us</a>
-                <a href="<?= url('/services') ?>" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50">Services</a>
-                <a href="<?= url('/projects') ?>" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50">Case Studies</a>
-                <a href="<?= url('/insights') ?>" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50">Insights</a>
-                <a href="<?= url('/careers') ?>" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50">Careers</a>
-                <a href="<?= url('/contact') ?>" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-accent">Contact</a>
+                <a href="<?= url('/') ?>" class="<?= getMobileClass('/', $currentUri) ?>">Home</a>
+                <a href="<?= url('/about') ?>" class="<?= getMobileClass('/about', $currentUri) ?>">About Us</a>
+                <a href="<?= url('/services') ?>" class="<?= getMobileClass('/services', $currentUri) ?>">Services</a>
+                <a href="<?= url('/projects') ?>" class="<?= getMobileClass('/projects', $currentUri) ?>">Case Studies</a>
+                <a href="<?= url('/insights') ?>" class="<?= getMobileClass('/insights', $currentUri) ?>">Insights</a>
+                <a href="<?= url('/careers') ?>" class="<?= getMobileClass('/careers', $currentUri) ?>">Careers</a>
+                <a href="<?= url('/contact') ?>" class="<?= getMobileClass('/contact', $currentUri) ?>">Contact</a>
             </div>
         </div>
     </nav>
