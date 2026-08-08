@@ -870,13 +870,20 @@ class AdminController extends Controller {
                         $fromAddress = $from ? ($from->mailbox . "@" . $from->host) : 'unknown';
                         $fromName = $from ? ($from->personal ?? $fromAddress) : 'Unknown';
                         
+                        // Fetch full body and create snippet
+                        $fullBody = $this->getImapBody($mbox, $i);
+                        $snippet = strip_tags(str_replace(['<br>', '<br/>', '</p>'], ' ', $fullBody));
+                        $snippet = preg_replace('/\s+/', ' ', $snippet);
+                        $snippet = mb_substr(trim($snippet), 0, 100) . '...';
+                        
                         $emails[] = [
                             'uid' => $i,
                             'from_name' => decode_mime_header($fromName),
                             'from_email' => $fromAddress,
                             'subject' => decode_mime_header($header->subject ?? '(No Subject)'),
                             'date' => $header->date ?? '',
-                            'body' => '[HTML or Multipart message - Click to view in cPanel client]'
+                            'body' => $fullBody,
+                            'snippet' => $snippet
                         ];
                     }
                     imap_close($mbox);
@@ -897,7 +904,8 @@ class AdminController extends Controller {
                     'from_email' => 'jerry@isecltd.ng',
                     'subject' => 'Integrated Systems Strategy 2026',
                     'date' => date('D, d M Y H:i:s O', strtotime('-1 hour')),
-                    'body' => 'Hi Team, please audit the Kwara GIS project endpoints. We need to secure the boundary API integrations immediately.'
+                    'body' => '<p>Hi Team,</p><p>Please audit the Kwara GIS project endpoints. We need to secure the boundary API integrations immediately.</p>',
+                    'snippet' => 'Hi Team, please audit the Kwara GIS project endpoints...'
                 ],
                 [
                     'uid' => 2,
@@ -905,7 +913,8 @@ class AdminController extends Controller {
                     'from_email' => 'fms.procure@abuja.gov.ng',
                     'subject' => 'Technical Audits SLA Proposal',
                     'date' => date('D, d M Y H:i:s O', strtotime('-1 day')),
-                    'body' => 'Dear ISEC, we have reviewed the revenue automation blueprints. Please send the pricing schedule from info@isecltd.ng.'
+                    'body' => '<p>Dear ISEC,</p><p>We have reviewed the revenue automation blueprints. Please send the pricing schedule from info@isecltd.ng.</p>',
+                    'snippet' => 'Dear ISEC, we have reviewed the revenue automation blueprints...'
                 ],
                 [
                     'uid' => 3,
@@ -913,7 +922,8 @@ class AdminController extends Controller {
                     'from_email' => 'no-reply@cpanel.isecltd.ng',
                     'subject' => '[Security Log] Successful Admin Panel Login',
                     'date' => date('D, d M Y H:i:s O', strtotime('-2 days')),
-                    'body' => 'Success login detected for admin@isecltd.ng from IP 192.168.1.45. Activity recorded in secure audit log trail.'
+                    'body' => 'Success login detected for admin@isecltd.ng from IP 192.168.1.45. Activity recorded in secure audit log trail.',
+                    'snippet' => 'Success login detected for admin@isecltd.ng from IP 192.168.1.45...'
                 ]
             ];
         }
@@ -926,6 +936,62 @@ class AdminController extends Controller {
             'imapEnabled' => $imapEnabled,
             'imapError' => $imapError
         ]);
+    }
+
+    /**
+     * Extracts the best readable body from an IMAP email structure
+     */
+    private function getImapBody($mbox, $uid) {
+        $structure = @imap_fetchstructure($mbox, $uid);
+        if (!$structure) {
+            return 'Could not read email structure.';
+        }
+        
+        $body = '';
+        $encoding = 0;
+        
+        if (isset($structure->parts) && count($structure->parts)) {
+            // Multipart message
+            $partNum = 1;
+            foreach ($structure->parts as $index => $sub) {
+                if (strtoupper($sub->subtype) === 'HTML') {
+                    $partNum = $index + 1;
+                    $encoding = $sub->encoding ?? 0;
+                    break;
+                }
+            }
+            if ($partNum === 1) {
+                $encoding = $structure->parts[0]->encoding ?? 0;
+            }
+            
+            // Check for nested parts (e.g. multipart/alternative inside mixed)
+            if ($structure->parts[$partNum - 1]->type === TYPEMULTIPART && isset($structure->parts[$partNum - 1]->parts)) {
+                $subPartNum = 1;
+                foreach ($structure->parts[$partNum - 1]->parts as $subIndex => $subSub) {
+                    if (strtoupper($subSub->subtype) === 'HTML') {
+                        $subPartNum = $subIndex + 1;
+                        $encoding = $subSub->encoding ?? 0;
+                        break;
+                    }
+                }
+                $partNum = $partNum . "." . $subPartNum;
+            }
+            
+            $body = @imap_fetchbody($mbox, $uid, (string)$partNum);
+        } else {
+            // Simple email
+            $body = @imap_fetchbody($mbox, $uid, 1);
+            $encoding = $structure->encoding ?? 0;
+        }
+        
+        if ($encoding == 3) {
+            $body = @imap_base64($body);
+        } elseif ($encoding == 4) {
+            $body = @quoted_printable_decode($body);
+        }
+        
+        // Ensure valid UTF-8 encoding
+        return mb_convert_encoding($body, 'UTF-8', 'UTF-8, ISO-8859-1, ASCII');
     }
     
     public function mailCompose(Request $request, Response $response): void {

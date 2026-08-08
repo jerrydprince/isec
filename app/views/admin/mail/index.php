@@ -138,7 +138,7 @@ use App\Models\Settings;
                             <span class="text-[9px] text-slate-400 font-bold" x-text="email.date"></span>
                         </div>
                         <h4 class="font-bold text-slate-800 text-xs truncate" x-text="email.subject"></h4>
-                        <p class="text-[10px] text-slate-500 font-light truncate" x-text="email.body"></p>
+                        <p class="text-[10px] text-slate-500 font-light truncate" x-text="email.snippet"></p>
                     </div>
                 </template>
             </div>
@@ -164,7 +164,9 @@ use App\Models\Settings;
                     </div>
                     
                     <!-- Reading Pane Body -->
-                    <div class="flex-1 p-6 overflow-y-auto mail-scroll text-slate-750 text-xs font-light leading-relaxed whitespace-pre-line" x-text="selectedEmail.body"></div>
+                    <div class="flex-1 overflow-y-auto mail-scroll bg-white">
+                        <iframe class="w-full h-full border-0" :srcdoc="selectedEmail.body"></iframe>
+                    </div>
                     
                     <!-- Reading Pane Action Footer -->
                     <div class="p-4 border-t border-slate-150 bg-slate-50/30 flex justify-end gap-2">
