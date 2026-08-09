@@ -4,9 +4,14 @@
             <h1 class="text-2xl font-bold text-slate-900">Manage Insights & Blogs</h1>
             <p class="text-xs text-slate-500 font-light mt-0.5">Author articles, case study documents, and executive whitepapers.</p>
         </div>
-        <a href="<?= url('/admin/insights/create') ?>" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow-md flex items-center gap-2">
-            <i class="fa-solid fa-plus"></i> Write Insight Post
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="<?= url('/admin/insights/categories') ?>" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-bold text-xs px-5 py-3 rounded-xl shadow-sm flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-tags"></i> Manage Categories
+            </a>
+            <a href="<?= url('/admin/insights/create') ?>" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow-md flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Write Insight Post
+            </a>
+        </div>
     </div>
 
     <!-- Table Card -->
