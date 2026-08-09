@@ -1,6 +1,3 @@
-﻿<?php include PUBLIC_DIR . '/../app/views/layouts/admin_header.php'; ?>
-<?php include PUBLIC_DIR . '/../app/views/layouts/admin_sidebar.php'; ?>
-
 <div class="max-w-7xl mx-auto space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -80,5 +77,3 @@
 
     </div>
 </div>
-
-<?php include PUBLIC_DIR . '/../app/views/layouts/admin_footer.php'; ?>
