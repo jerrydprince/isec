@@ -464,6 +464,8 @@ class AdminController extends Controller {
         $categoryId = (int)$request->get('category_id');
         $type = $request->get('type', 'blog');
         $status = $request->get('status', 'draft');
+        $tags = $request->get('tags');
+        $quote = $request->get('quote');
 
         if (empty($title) || empty($content) || empty($categoryId)) {
             $session->setFlash('error', 'Title, Content, and Category are required.');
@@ -486,6 +488,31 @@ class AdminController extends Controller {
             }
         }
 
+        // Upload Gallery Images
+        $galleryImages = null;
+        $galleryPaths = [];
+        if (isset($_FILES['gallery_images']) && is_array($_FILES['gallery_images']['name'])) {
+            $files = $_FILES['gallery_images'];
+            $dir = PUBLIC_DIR . '/assets/uploads/blogs/';
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+            for ($i = 0; $i < count($files['name']); $i++) {
+                if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                    $ext = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
+                    if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                        $filename = uniqid('blog_gallery_', true) . '.' . $ext;
+                        if (move_uploaded_file($files['tmp_name'][$i], $dir . $filename)) {
+                            $galleryPaths[] = 'assets/uploads/blogs/' . $filename;
+                        }
+                    }
+                }
+            }
+            if (!empty($galleryPaths)) {
+                $galleryImages = implode(',', $galleryPaths);
+            }
+        }
+
         $slug = trim(strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)), '-');
         $publishedAt = ($status === 'published') ? date('Y-m-d H:i:s') : null;
 
@@ -496,7 +523,10 @@ class AdminController extends Controller {
             'slug' => $slug,
             'content' => $content,
             'summary' => $summary,
+            'tags' => $tags,
+            'quote' => $quote,
             'banner_image' => $bannerPath,
+            'gallery_images' => $galleryImages,
             'type' => $type,
             'status' => $status,
             'published_at' => $publishedAt
@@ -542,6 +572,8 @@ class AdminController extends Controller {
         $categoryId = (int)$request->get('category_id');
         $type = $request->get('type', 'blog');
         $status = $request->get('status', 'draft');
+        $tags = $request->get('tags');
+        $quote = $request->get('quote');
 
         if (empty($title) || empty($content) || empty($categoryId)) {
             $session->setFlash('error', 'Title, Content, and Category are required.');
@@ -563,6 +595,31 @@ class AdminController extends Controller {
             }
         }
 
+        // Upload Gallery Images
+        $galleryImages = $blog['gallery_images'] ?? null;
+        $galleryPaths = [];
+        if (isset($_FILES['gallery_images']) && is_array($_FILES['gallery_images']['name']) && !empty($_FILES['gallery_images']['name'][0])) {
+            $files = $_FILES['gallery_images'];
+            $dir = PUBLIC_DIR . '/assets/uploads/blogs/';
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+            for ($i = 0; $i < count($files['name']); $i++) {
+                if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                    $ext = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
+                    if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                        $filename = uniqid('blog_gallery_', true) . '.' . $ext;
+                        if (move_uploaded_file($files['tmp_name'][$i], $dir . $filename)) {
+                            $galleryPaths[] = 'assets/uploads/blogs/' . $filename;
+                        }
+                    }
+                }
+            }
+            if (!empty($galleryPaths)) {
+                $galleryImages = implode(',', $galleryPaths);
+            }
+        }
+
         $slug = trim(strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)), '-');
         
         // Handle publishing timestamp adjustments
@@ -579,7 +636,10 @@ class AdminController extends Controller {
             'slug' => $slug,
             'content' => $content,
             'summary' => $summary,
+            'tags' => $tags,
+            'quote' => $quote,
             'banner_image' => $bannerPath,
+            'gallery_images' => $galleryImages,
             'type' => $type,
             'status' => $status,
             'published_at' => $publishedAt
@@ -600,6 +660,50 @@ class AdminController extends Controller {
         $session = new Session();
         $session->setFlash('success', 'Post deleted successfully.');
         $response->redirect('/admin/insights');
+    }
+
+    public function insightCategories(Request $request, Response $response): string {
+        $this->checkPermission('manage_blogs');
+        $categories = \App\Models\BlogCategory::all('name ASC');
+        return $this->render('admin/insights/categories', [
+            'title' => 'Manage Blog Categories',
+            'categories' => $categories
+        ]);
+    }
+
+    public function insightCategoryStore(Request $request, Response $response): void {
+        $this->checkPermission('manage_blogs');
+        $session = new Session();
+        
+        $name = trim($request->get('name'));
+        if (empty($name)) {
+            $session->setFlash('error', 'Category name is required.');
+            $response->redirect('/admin/insights/categories');
+            return;
+        }
+
+        $slug = trim(strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)), '-');
+        
+        \App\Models\BlogCategory::create([
+            'name' => $name,
+            'slug' => $slug
+        ]);
+        
+        AuditLog::log(current_user()['id'], 'Create Category', 'Created insight category: ' . $name);
+        $session->setFlash('success', 'Category created successfully.');
+        $response->redirect('/admin/insights/categories');
+    }
+
+    public function insightCategoryDelete(Request $request, Response $response, array $params): void {
+        $this->checkPermission('manage_blogs');
+        $id = (int)($params['id'] ?? 0);
+        
+        \App\Models\BlogCategory::delete($id);
+        AuditLog::log(current_user()['id'], 'Delete Category', 'Deleted insight category ID: ' . $id);
+        
+        $session = new Session();
+        $session->setFlash('success', 'Category deleted successfully.');
+        $response->redirect('/admin/insights/categories');
     }
 
     // ==========================================

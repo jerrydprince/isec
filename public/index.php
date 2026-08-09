@@ -75,6 +75,9 @@ $router->get('/admin/projects/delete/{id}', [\App\Controllers\AdminController::c
 
 // Admin Insights CRUD
 $router->get('/admin/insights', [\App\Controllers\AdminController::class, 'insights'], [AuthMiddleware::class]);
+$router->get('/admin/insights/categories', [\App\Controllers\AdminController::class, 'insightCategories'], [AuthMiddleware::class]);
+$router->post('/admin/insights/categories/create', [\App\Controllers\AdminController::class, 'insightCategoryStore'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/insights/categories/delete/{id}', [\App\Controllers\AdminController::class, 'insightCategoryDelete'], [AuthMiddleware::class]);
 $router->get('/admin/insights/create', [\App\Controllers\AdminController::class, 'insightCreate'], [AuthMiddleware::class]);
 $router->post('/admin/insights/create', [\App\Controllers\AdminController::class, 'insightStore'], [AuthMiddleware::class, CSRFMiddleware::class]);
 $router->get('/admin/insights/edit/{id}', [\App\Controllers\AdminController::class, 'insightEdit'], [AuthMiddleware::class]);

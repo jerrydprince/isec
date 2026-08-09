@@ -55,8 +55,24 @@
                 <input type="text" name="summary" placeholder="Provide a concise 1-2 sentence overview for indexing lists..." class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850" required>
             </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Tags (Comma separated)</label>
+                    <input type="text" name="tags" placeholder="e.g. Technology, Security, ERP" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Article Gallery Images (Optional)</label>
+                    <input type="file" name="gallery_images[]" multiple accept=".jpg,.jpeg,.png,.webp" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850">
+                </div>
+            </div>
+
             <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Article Body content (HTML Supported) *</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Highlight Quote (Optional)</label>
+                <textarea name="quote" rows="2" placeholder="An impactful quote to highlight within the article..." class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Article Content (HTML Supported) *</label>
                 <textarea name="content" rows="10" placeholder="<h4>Key Principles</h4><p>Details...</p>" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all font-mono text-indigo-900" required></textarea>
             </div>
 

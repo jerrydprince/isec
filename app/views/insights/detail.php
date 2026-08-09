@@ -32,15 +32,47 @@
                 article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
             </style>
             
+            <?php if (!empty($insight['quote'])): ?>
+                <blockquote class="border-l-4 border-accent pl-6 py-4 my-8 bg-slate-50 dark:bg-slate-800/50 rounded-r-2xl italic font-medium text-lg text-slate-800 dark:text-slate-200">
+                    "<?= e($insight['quote']) ?>"
+                </blockquote>
+            <?php endif; ?>
+
             <?= $insight['content'] // Unescaped since it is CMS generated rich text content ?>
+
+            <?php if (!empty($insight['gallery_images'])): ?>
+                <?php $gallery = explode(',', $insight['gallery_images']); ?>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-12 mb-8">
+                    <?php foreach($gallery as $img): ?>
+                        <div class="rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800 h-48">
+                            <img src="<?= url(trim($img)) ?>" alt="Gallery Image" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
         </article>
 
+        <?php if (!empty($insight['tags'])): ?>
+            <?php $tags = array_map('trim', explode(',', $insight['tags'])); ?>
+            <div class="flex flex-wrap gap-2 mt-10">
+                <?php foreach($tags as $tag): ?>
+                    <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold uppercase tracking-widest rounded-full"><?= e($tag) ?></span>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
         <!-- Dynamic Share bar -->
-        <div class="border-t border-slate-100 dark:border-slate-850 pt-8 mt-12 flex flex-wrap justify-between items-center gap-4 text-xs font-bold text-slate-400">
-            <div class="flex items-center gap-3">
+        <?php 
+            $shareUrl = urlencode(url('/insights/' . $insight['slug']));
+            $shareTitle = urlencode($insight['title']);
+        ?>
+        <div class="border-t border-slate-100 dark:border-slate-850 pt-8 mt-8 flex flex-wrap justify-between items-center gap-4 text-xs font-bold text-slate-400">
+            <div class="flex items-center gap-4">
                 <span>Share this:</span>
-                <a href="#" class="hover:text-accent"><i class="fa-brands fa-linkedin text-base"></i></a>
-                <a href="#" class="hover:text-accent"><i class="fa-brands fa-x-twitter text-base"></i></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=<?= $shareUrl ?>" target="_blank" rel="noopener noreferrer" class="hover:text-[#1877F2] transition-colors"><i class="fa-brands fa-facebook text-lg"></i></a>
+                <a href="https://twitter.com/intent/tweet?url=<?= $shareUrl ?>&text=<?= $shareTitle ?>" target="_blank" rel="noopener noreferrer" class="hover:text-[#1DA1F2] transition-colors"><i class="fa-brands fa-x-twitter text-lg"></i></a>
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?= $shareUrl ?>&title=<?= $shareTitle ?>" target="_blank" rel="noopener noreferrer" class="hover:text-[#0A66C2] transition-colors"><i class="fa-brands fa-linkedin text-lg"></i></a>
             </div>
             <a href="<?= url('/insights') ?>" class="text-accent hover:underline">Back to insights list</a>
         </div>
