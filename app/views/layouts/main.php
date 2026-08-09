@@ -42,14 +42,26 @@ function getMobileClass($path, $currentUri) {
     <link rel="icon" type="image/png" href="<?= asset('images/favicon.png') ?>?v=2">
     
     <!-- Meta tags for SEO -->
-    <meta name="description" content="<?= e($siteDesc) ?>">
+    <?php
+        $finalDesc = $metaDescription ?? $siteDesc;
+        $finalImage = isset($metaImage) ? url($metaImage) : url('/assets/images/industry.png'); // Fallback image
+        $finalUrl = url($requestUri ?? $_SERVER['REQUEST_URI'] ?? '/');
+    ?>
+    <meta name="description" content="<?= e($finalDesc) ?>">
     <meta name="keywords" content="<?= e(Settings::get('meta_keywords', 'consulting, e-governance, digital transformation')) ?>">
     
     <!-- OpenGraph SEO -->
     <meta property="og:title" content="<?= e($title ?? $siteName) ?>">
-    <meta property="og:description" content="<?= e($siteDesc) ?>">
+    <meta property="og:description" content="<?= e($finalDesc) ?>">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="<?= e(url($requestUri ?? '')) ?>">
+    <meta property="og:url" content="<?= e($finalUrl) ?>">
+    <meta property="og:image" content="<?= e($finalImage) ?>">
+    
+    <!-- Twitter Card SEO -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= e($title ?? $siteName) ?>">
+    <meta name="twitter:description" content="<?= e($finalDesc) ?>">
+    <meta name="twitter:image" content="<?= e($finalImage) ?>">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

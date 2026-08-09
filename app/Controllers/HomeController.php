@@ -94,7 +94,9 @@ class HomeController extends Controller {
         return $this->render('insights/detail', [
             'title' => $insight['title'] . ' - Insights',
             'insight' => $insight,
-            'related' => $related
+            'related' => $related,
+            'metaDescription' => $insight['summary'] ?? '',
+            'metaImage' => $insight['banner_image'] ?? ''
         ]);
     }
 
