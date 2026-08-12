@@ -459,7 +459,7 @@ class AdminController extends Controller {
         $session = new Session();
 
         $title = $request->get('title');
-        $content = $request->get('content');
+        $content = $_POST['content'] ?? '';
         $summary = $request->get('summary');
         $categoryId = (int)$request->get('category_id');
         $type = $request->get('type', 'blog');
@@ -567,7 +567,7 @@ class AdminController extends Controller {
         }
 
         $title = $request->get('title');
-        $content = $request->get('content');
+        $content = $_POST['content'] ?? ''; // Bypass Request sanitizer for rich text
         $summary = $request->get('summary');
         $categoryId = (int)$request->get('category_id');
         $type = $request->get('type', 'blog');

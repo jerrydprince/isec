@@ -73,8 +73,8 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Article Content (HTML Supported) *</label>
-                <textarea name="content" rows="10" placeholder="<h4>Key Principles</h4><p>Details...</p>" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all font-mono text-indigo-900" required><?= e($blog['content']) ?></textarea>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Article Content (Rich Text) *</label>
+                <textarea name="content" id="content_editor" rows="20" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all font-sans text-slate-800"><?= e(htmlspecialchars_decode($blog['content'] ?? '', ENT_QUOTES)) ?></textarea>
             </div>
 
             <hr class="border-slate-100">
@@ -86,3 +86,16 @@
         </form>
     </div>
 </div>
+
+<script src="https://cdn.tiny.cloud/1/dpifpj145leoeycvrhsb25x1cd4renusohog2s0p6l10z585/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#content_editor',
+        plugins: 'advlist autolink lists link image charmap preview anchor pagebreak',
+        toolbar_mode: 'floating',
+        toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | help',
+        menubar: false,
+        height: 600,
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; }'
+    });
+</script>

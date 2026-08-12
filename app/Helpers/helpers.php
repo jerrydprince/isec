@@ -180,6 +180,9 @@ if (!function_exists('parse_article_content')) {
     function parse_article_content(?string $text): string {
         if (!$text) return '';
         
+        // Decode HTML entities in case they were saved escaped by the Request sanitizer previously
+        $text = htmlspecialchars_decode($text, ENT_QUOTES);
+        
         // Convert Markdown Headers
         $text = preg_replace('/^### (.*?)$/m', '<h4>$1</h4>', $text);
         $text = preg_replace('/^## (.*?)$/m', '<h3>$1</h3>', $text);
