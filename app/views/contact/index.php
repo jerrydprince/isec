@@ -7,7 +7,7 @@ $contactEmail = Settings::get('contact_email', 'info@isec.com.ng');
 $contactPhone = Settings::get('contact_phone', '+234 803 123 4567');
 $contactAddress = Settings::get('contact_address', 'Abuja, Nigeria');
 $whatsappNumber = Settings::get('whatsapp_number', '+2348031234567');
-$googleMapEmbed = Settings::get('google_map_embed', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3939.81665676342!2d7.472093514787189!3d9.075677893488219!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0baf74681647%3A0xed41cc6cfb2f7a4e!2sWuse%202%2C%20Abuja!5e0!3m2!1sen!2sng!4v1680000000000!5m2!1sen!2sng');
+$googleMapEmbed = Settings::get('google_map_embed', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25751.572645386423!2d7.481050699783806!3d9.048882733229076!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0b6d50c2ef9f%3A0x71db97e7651f14c1!2sWorld%20Trade%20Center%20Abuja%20-%20Luxury%20Apartments%20%26%20Premier%20Office%20Spaces!5e0!3m2!1sen!2sng!4v1786522386561!5m2!1sen!2sng');
 
 $services = Service::getPublished();
 ?>

@@ -1,4 +1,4 @@
-﻿-- ISEC Database Seeder (SQL Script)
+-- ISEC Database Seeder (SQL Script)
 
 -- 1. Seed Roles
 INSERT INTO `roles` (`id`, `name`, `description`) VALUES
@@ -65,7 +65,7 @@ INSERT INTO `settings` (`key`, `value`) VALUES
 ('primary_color', '#0f172a'), -- Deep Slate Blue
 ('secondary_color', '#1e3a8a'), -- Royal Navy Blue
 ('accent_color', '#0d9488'), -- Teal
-('google_map_embed', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3939.81665676342!2d7.472093514787189!3d9.075677893488219!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0baf74681647%3A0xed41cc6cfb2f7a4e!2sWuse%202%2C%20Abuja!5e0!3m2!1sen!2sng!4v1680000000000!5m2!1sen!2sng'),
+('google_map_embed', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25751.572645386423!2d7.481050699783806!3d9.048882733229076!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0b6d50c2ef9f%3A0x71db97e7651f14c1!2sWorld%20Trade%20Center%20Abuja%20-%20Luxury%20Apartments%20%26%20Premier%20Office%20Spaces!5e0!3m2!1sen!2sng!4v1786522386561!5m2!1sen!2sng'),
 ('meta_keywords', 'consulting, enterprise solutions, digital transformation, government automation, public sector, nigeria, engineering consulting, systems efficiency'),
 ('cac_number', 'RC - 1234567'),
 ('firs_tin', 'TIN - 987654321-0001'),
