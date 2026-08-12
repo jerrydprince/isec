@@ -26,6 +26,32 @@ use App\Models\Settings;
     <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-0"></div>
     <div class="absolute inset-0 bg-slate-950/40 backdrop-brightness-75 z-0"></div>
     
+    <!-- Animated Vector Lines -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 w-full h-full pointer-events-none z-[1]" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+        <style>
+            .vector-line {
+                stroke-dasharray: 3000;
+                stroke-dashoffset: 3000;
+                animation: drawLine linear infinite;
+            }
+            .vector-line-1 { animation-duration: 12s; animation-delay: 0s; stroke: rgba(255,255,255,0.15); stroke-width: 1; }
+            .vector-line-2 { animation-duration: 15s; animation-delay: -5s; stroke: rgba(59,130,246,0.3); stroke-width: 2; }
+            .vector-line-3 { animation-duration: 18s; animation-delay: -9s; stroke: rgba(16,185,129,0.2); stroke-width: 1.5; }
+            .vector-line-4 { animation-duration: 22s; animation-delay: -12s; stroke: rgba(255,255,255,0.1); stroke-width: 0.5; }
+            
+            @keyframes drawLine {
+                0% { stroke-dashoffset: 3000; opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { stroke-dashoffset: -3000; opacity: 0; }
+            }
+        </style>
+        <path class="vector-line vector-line-1" d="M -100 200 L 200 400 L 500 100 L 800 600 L 1100 800" fill="none" />
+        <path class="vector-line vector-line-2" d="M -100 900 L 300 700 L 600 900 L 900 400 L 1100 100" fill="none" />
+        <path class="vector-line vector-line-3" d="M 300 -100 L 400 300 L 100 600 L 500 800 L 700 1100" fill="none" />
+        <path class="vector-line vector-line-4" d="M 800 -100 L 600 200 L 900 500 L 400 800 L 200 1100" fill="none" />
+    </svg>
+    
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20" data-aos="fade-up">
         <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-accent uppercase tracking-widest mb-6 border border-white/10">
             <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span> Technology & Management Consulting
