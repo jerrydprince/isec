@@ -172,3 +172,29 @@ if (!function_exists('settings')) {
         return \App\Models\Settings::get($key, $default);
     }
 }
+
+/**
+ * Parse article content for basic markdown images and paragraphs
+ */
+if (!function_exists('parse_article_content')) {
+    function parse_article_content(?string $text): string {
+        if (!$text) return '';
+        // Convert markdown images: ![alt](url)
+        $text = preg_replace('/!\[(.*?)\]\((.*?)\)/', '<img src="$2" alt="$1" class="w-full h-auto rounded-xl shadow-md my-8">', $text);
+        
+        // If content already contains HTML blocks, assume it's HTML formatted.
+        // Otherwise, wrap blocks in <p> tags.
+        if (strpos($text, '<p>') === false && strpos($text, '<br>') === false && strpos($text, '<br/>') === false && strpos($text, '<h4>') === false) {
+            // Replace \r\n with \n
+            $text = str_replace("\r\n", "\n", $text);
+            // Replace double newlines with paragraph boundaries
+            $text = '<p>' . preg_replace('/\n\s*\n/', '</p><p>', trim($text)) . '</p>';
+            // Replace single newlines with <br>
+            $text = nl2br($text);
+            // Remove empty paragraphs that might have been created
+            $text = str_replace('<p></p>', '', $text);
+        }
+        
+        return $text;
+    }
+}

@@ -38,7 +38,7 @@
                 </blockquote>
             <?php endif; ?>
 
-            <?= $insight['content'] // Unescaped since it is CMS generated rich text content ?>
+            <?= parse_article_content($insight['content']) // Formatted to support markdown images and plain text paragraphs ?>
 
             <?php if (!empty($insight['gallery_images'])): ?>
                 <?php $gallery = explode(',', $insight['gallery_images']); ?>
