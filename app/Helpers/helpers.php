@@ -179,19 +179,40 @@ if (!function_exists('settings')) {
 if (!function_exists('parse_article_content')) {
     function parse_article_content(?string $text): string {
         if (!$text) return '';
+        
+        // Convert Markdown Headers
+        $text = preg_replace('/^### (.*?)$/m', '<h4>$1</h4>', $text);
+        $text = preg_replace('/^## (.*?)$/m', '<h3>$1</h3>', $text);
+        $text = preg_replace('/^# (.*?)$/m', '<h2>$1</h2>', $text);
+        
         // Convert markdown images: ![alt](url)
         $text = preg_replace('/!\[(.*?)\]\((.*?)\)/', '<img src="$2" alt="$1" class="w-full h-auto rounded-xl shadow-md my-8">', $text);
         
-        // If content already contains HTML blocks, assume it's HTML formatted.
+        // Convert markdown links: [text](url)
+        $text = preg_replace('/\[(.*?)\]\((.*?)\)/', '<a href="$2" class="text-accent hover:underline font-medium">$1</a>', $text);
+        
+        // Convert markdown bold and italic
+        $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
+        $text = preg_replace('/__(.*?)__/', '<strong>$1</strong>', $text);
+        $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
+        $text = preg_replace('/_(.*?)_/', '<em>$1</em>', $text);
+        
+        // Convert list items
+        $text = preg_replace('/^\s*[\-\*]\s+(.*)$/m', '<li>$1</li>', $text);
+        // Wrap consecutive <li> elements in <ul>
+        $text = preg_replace('/(<li>.*<\/li>(\n<li>.*<\/li>)*)/', '<ul class="list-disc pl-5 my-4 space-y-2">$1</ul>', $text);
+
+        // If content already contains HTML block tags, assume it's HTML formatted.
         // Otherwise, wrap blocks in <p> tags.
-        if (strpos($text, '<p>') === false && strpos($text, '<br>') === false && strpos($text, '<br/>') === false && strpos($text, '<h4>') === false) {
+        if (strpos($text, '<p>') === false && strpos($text, '<br>') === false && strpos($text, '<br/>') === false && strpos($text, '<h4>') === false && strpos($text, '<h3>') === false && strpos($text, '<h2>') === false && strpos($text, '<ul>') === false) {
             // Replace \r\n with \n
             $text = str_replace("\r\n", "\n", $text);
             // Replace double newlines with paragraph boundaries
             $text = '<p>' . preg_replace('/\n\s*\n/', '</p><p>', trim($text)) . '</p>';
-            // Replace single newlines with <br>
+            // Replace single newlines with <br> inside paragraphs (excluding ul/li areas)
+            // It's safer to just let the markdown handle structure, but we add <br> for plain text
             $text = nl2br($text);
-            // Remove empty paragraphs that might have been created
+            // Remove empty paragraphs
             $text = str_replace('<p></p>', '', $text);
         }
         

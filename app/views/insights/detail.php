@@ -21,6 +21,12 @@
 <!-- Article Content -->
 <section class="py-24 bg-white dark:bg-slate-900">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Article Banner Image -->
+        <?php if (!empty($insight['banner_image']) && $insight['banner_image'] !== 'insight_placeholder.jpg'): ?>
+            <div class="mb-12 rounded-[2rem] overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-800 h-[300px] sm:h-[450px]">
+                <img src="<?= url(trim($insight['banner_image'])) ?>" alt="<?= e($insight['title']) ?>" class="w-full h-full object-cover">
+            </div>
+        <?php endif; ?>
         
         <!-- Main Rich Text Content area -->
         <article class="prose prose-slate dark:prose-invert max-w-none text-slate-650 dark:text-slate-350 leading-relaxed font-light text-sm space-y-6">
@@ -75,6 +81,27 @@
                 <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?= $shareUrl ?>&title=<?= $shareTitle ?>" target="_blank" rel="noopener noreferrer" class="hover:text-[#0A66C2] transition-colors"><i class="fa-brands fa-linkedin text-lg"></i></a>
             </div>
             <a href="<?= url('/insights') ?>" class="text-accent hover:underline">Back to insights list</a>
+        </div>
+        <!-- Unique Author Profile Card -->
+        <div class="mt-20 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 rounded-[2rem] p-8 sm:p-10 border border-slate-200/60 dark:border-slate-800 shadow-xl shadow-slate-200/20 dark:shadow-none flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -mr-20 -mt-20 transition-transform duration-700 group-hover:scale-150"></div>
+            
+            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-primary to-accent flex-shrink-0 flex items-center justify-center text-3xl sm:text-4xl font-extrabold text-white shadow-lg border-4 border-white dark:border-slate-900 z-10">
+                <?= substr($insight['author_name'], 0, 1) ?>
+            </div>
+            
+            <div class="text-center md:text-left flex-1 z-10">
+                <span class="inline-block px-3 py-1 bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-widest rounded-full mb-3">About the Author</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mb-3"><?= e($insight['author_name']) ?></h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed max-w-2xl">
+                    <?= e($insight['author_name']) ?> is an expert contributor at ISEC, specializing in systems efficiency and technology optimization. They frequently share valuable insights and perspectives on <?= strtolower(e($insight['category_name'])) ?> and strategic implementations.
+                </p>
+                <div class="mt-6 flex justify-center md:justify-start gap-3">
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white hover:bg-[#0A66C2] transition-all duration-300 shadow-sm"><i class="fa-brands fa-linkedin-in text-sm"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white hover:bg-slate-900 transition-all duration-300 shadow-sm"><i class="fa-brands fa-x-twitter text-sm"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white hover:bg-accent transition-all duration-300 shadow-sm"><i class="fa-solid fa-envelope text-sm"></i></a>
+                </div>
+            </div>
         </div>
 
         <!-- Related Insights -->
