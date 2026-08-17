@@ -97,9 +97,9 @@
                     <?= e($insight['author_name']) ?> is an expert contributor at ISEC, specializing in systems efficiency and technology optimization. They frequently share valuable insights and perspectives on <?= strtolower(e($insight['category_name'])) ?> and strategic implementations.
                 </p>
                 <div class="mt-6 flex justify-center md:justify-start gap-3">
-                    <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white hover:bg-[#0A66C2] transition-all duration-300 shadow-sm"><i class="fa-brands fa-linkedin-in text-sm"></i></a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white hover:bg-slate-900 transition-all duration-300 shadow-sm"><i class="fa-brands fa-x-twitter text-sm"></i></a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white hover:bg-accent transition-all duration-300 shadow-sm"><i class="fa-solid fa-envelope text-sm"></i></a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?= urlencode(url('/insights/' . $insight['slug'])) ?>&title=<?= urlencode($insight['title']) ?>" target="_blank" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white hover:bg-[#0A66C2] transition-all duration-300 shadow-sm"><i class="fa-brands fa-linkedin-in text-sm"></i></a>
+                    <a href="https://twitter.com/intent/tweet?url=<?= urlencode(url('/insights/' . $insight['slug'])) ?>&text=<?= urlencode($insight['title']) ?>" target="_blank" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white hover:bg-slate-900 transition-all duration-300 shadow-sm"><i class="fa-brands fa-x-twitter text-sm"></i></a>
+                    <a href="mailto:?subject=<?= urlencode($insight['title']) ?>&body=<?= urlencode('Check out this article: ' . url('/insights/' . $insight['slug'])) ?>" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-white hover:bg-accent transition-all duration-300 shadow-sm"><i class="fa-solid fa-envelope text-sm"></i></a>
                 </div>
             </div>
         </div>

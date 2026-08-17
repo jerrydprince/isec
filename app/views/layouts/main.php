@@ -36,19 +36,19 @@ function getMobileClass($path, $currentUri) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= e($title ?? $siteName) ?></title>
+    <title><?= e($title ?? 'Software Development Company in Abuja | ISEC') ?></title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?= asset('images/favicon.png') ?>?v=2">
     
     <!-- Meta tags for SEO -->
     <?php
-        $finalDesc = $metaDescription ?? $siteDesc;
+        $finalDesc = $metaDescription ?? 'ISEC builds property management systems, retail POS, business websites and custom software for Nigerian businesses. Based in Abuja. Free 30-minute assessment.';
         $finalImage = isset($metaImage) ? url($metaImage) : url('/assets/images/industry.png'); // Fallback image
         $finalUrl = url($requestUri ?? $_SERVER['REQUEST_URI'] ?? '/');
     ?>
     <meta name="description" content="<?= e($finalDesc) ?>">
-    <meta name="keywords" content="<?= e(Settings::get('meta_keywords', 'consulting, e-governance, digital transformation')) ?>">
+    <meta name="keywords" content="<?= e(Settings::get('meta_keywords', 'software development company Abuja, property management software Nigeria, POS system Nigeria, website design Abuja, custom software Nigeria')) ?>">
     
     <!-- OpenGraph SEO -->
     <meta property="og:title" content="<?= e($title ?? $siteName) ?>">
@@ -163,6 +163,16 @@ function getMobileClass($path, $currentUri) {
     <!-- GSAP Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WVW3262FN6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-WVW3262FN6');
+    </script>
 </head>
 <body class="bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 font-body" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileMenu: false }" :class="{ 'dark': darkMode }">
 
@@ -242,6 +252,11 @@ function getMobileClass($path, $currentUri) {
         </div>
     <?php endif; ?>
 
+    <!-- Sticky Mobile WhatsApp Button -->
+    <a href="https://wa.me/2348100794455?text=Hi%20ISEC,%20I'd%20like%20to%20know%20more%20about%20%E2%80%94" target="_blank" class="md:hidden fixed bottom-6 left-6 z-[9999] bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </a>
+
     <!-- Main Dynamic Content -->
     <main class="min-h-[70vh]">
         {{content}}
@@ -250,64 +265,66 @@ function getMobileClass($path, $currentUri) {
     <!-- Premium Footer -->
     <footer class="bg-slate-900 text-slate-400 pt-16 pb-8 border-t border-slate-850 dark:bg-slate-950">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
                 <!-- Branding column -->
-                <div class="space-y-4">
-                    <a href="<?= url('/') ?>" class="inline-block">
-                        <img src="<?= asset('images/logo.png') ?>?v=5" alt="ISEC Logo" class="h-12 w-auto object-contain invert transition-all" />
-                    </a>
-                    <p class="text-sm text-slate-400 font-light leading-relaxed"><?= e($siteDesc) ?></p>
-                    <div class="flex space-x-4 pt-2">
-                        <a href="<?= e(Settings::get('linkedin_url', '#')) ?>" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-accent hover:text-white flex items-center justify-center transition-all duration-300"><i class="fa-brands fa-linkedin-in text-sm"></i></a>
-                        <a href="<?= e(Settings::get('twitter_url', '#')) ?>" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-accent hover:text-white flex items-center justify-center transition-all duration-300"><i class="fa-brands fa-x-twitter text-sm"></i></a>
-                        <a href="<?= e(Settings::get('facebook_url', '#')) ?>" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-accent hover:text-white flex items-center justify-center transition-all duration-300"><i class="fa-brands fa-facebook-f text-sm"></i></a>
+                <div class="space-y-4 md:col-span-2 pr-4">
+                    <h3 class="text-white font-bold text-lg mb-2">Integrated Systems Efficiency Consults Limited</h3>
+                    <p class="text-sm text-slate-400 font-light leading-relaxed">
+                        Plot 1333, World Trade Centre,<br>
+                        Central Business District,<br>
+                        Abuja, FCT, Nigeria
+                    </p>
+                    <div class="space-y-1 text-sm pt-2">
+                        <p>+234 810 079 4455 &bull; +234 903 141 4971</p>
+                        <p><a href="mailto:info@isecltd.ng" class="hover:text-white transition-colors">info@isecltd.ng</a> &bull; <a href="mailto:admin@isecltd.ng" class="hover:text-white transition-colors">admin@isecltd.ng</a></p>
                     </div>
                 </div>
                 
-                <!-- Quick links -->
+                <!-- Products -->
                 <div>
-                    <h4 class="text-white font-bold text-sm tracking-widest uppercase mb-4">Core Agency</h4>
+                    <h4 class="text-white font-bold text-sm tracking-widest uppercase mb-4">Products</h4>
                     <ul class="space-y-2 text-sm font-medium">
-                        <li><a href="<?= url('/about') ?>" class="hover:text-accent transition-colors">About History</a></li>
-                        <li><a href="<?= url('/services') ?>" class="hover:text-accent transition-colors">Consulting Services</a></li>
-                        <li><a href="<?= url('/projects') ?>" class="hover:text-accent transition-colors">Case Studies</a></li>
-                        <li><a href="<?= url('/careers') ?>" class="hover:text-accent transition-colors">Job Openings</a></li>
-                        <li><a href="<?= url('/verify-certificate') ?>" class="hover:text-accent transition-colors">Verify Certificate</a></li>
-                        <li><a href="<?= url('/' . Settings::get('company_profile_pdf', 'assets/uploads/documents/company_profile.pdf')) ?>" target="_blank" class="hover:text-accent transition-colors text-xs font-semibold text-red-500"><i class="fa-solid fa-file-pdf mr-1"></i> Company Profile.pdf</a></li>
+                        <li><a href="<?= url('/#products') ?>" class="hover:text-teal-400 transition-colors">Property Manager</a></li>
+                        <li><a href="<?= url('/#products') ?>" class="hover:text-teal-400 transition-colors">Retail POS</a></li>
+                        <li><a href="<?= url('/#products') ?>" class="hover:text-teal-400 transition-colors">Business Websites</a></li>
+                        <li><a href="<?= url('/#products') ?>" class="hover:text-teal-400 transition-colors">Custom Software</a></li>
                     </ul>
                 </div>
 
-                <!-- Office Contact info -->
+                <!-- Company -->
                 <div>
-                    <h4 class="text-white font-bold text-sm tracking-widest uppercase mb-4">Abuja Office</h4>
-                    <ul class="space-y-2 text-sm font-light">
-                        <li class="flex items-start gap-2"><i class="fa-solid fa-location-dot mt-1 text-accent text-xs"></i> <span><?= e($contactAddress) ?></span></li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-accent text-xs"></i> <span><?= e($contactPhone) ?></span></li>
-                        <li class="flex items-center gap-2"><i class="fa-solid fa-envelope text-accent text-xs"></i> <span><?= e($contactEmail) ?></span></li>
+                    <h4 class="text-white font-bold text-sm tracking-widest uppercase mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm font-medium">
+                        <li><a href="<?= url('/about') ?>" class="hover:text-teal-400 transition-colors">About</a></li>
+                        <li><a href="<?= url('/' . Settings::get('company_profile_pdf', 'assets/uploads/documents/company_profile.pdf')) ?>" target="_blank" class="hover:text-teal-400 transition-colors">Corporate Profile</a></li>
+                        <li><a href="<?= url('/projects') ?>" class="hover:text-teal-400 transition-colors">Case Studies</a></li>
+                        <li><a href="<?= url('/verify-certificate') ?>" class="hover:text-teal-400 transition-colors">Verify Certificate</a></li>
+                        <li><a href="<?= url('/contact') ?>" class="hover:text-teal-400 transition-colors">Contact</a></li>
                     </ul>
                 </div>
 
-                <!-- Newsletter form -->
-                <div class="space-y-4">
-                    <h4 class="text-white font-bold text-sm tracking-widest uppercase mb-4">Corporate Digest</h4>
-                    <p class="text-xs font-light text-slate-400">Subscribe for executive whitepapers and systems efficiency research notes.</p>
-                    <form action="<?= url('/newsletter') ?>" method="POST" class="flex gap-2 bg-slate-800 p-1.5 rounded-full border border-slate-700 focus-within:border-accent">
-                        <?= csrf_field() ?>
-                        <input type="email" name="email" placeholder="Your work email..." class="bg-transparent border-0 flex-1 outline-none text-xs text-white px-3" required>
-                        <button type="submit" class="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white rounded-full px-4 py-2 text-xs font-semibold tracking-wide transition-all shadow-md">Join</button>
-                    </form>
+                <!-- Enterprise -->
+                <div>
+                    <h4 class="text-white font-bold text-sm tracking-widest uppercase mb-4">Enterprise</h4>
+                    <ul class="space-y-2 text-sm font-medium">
+                        <li><a href="<?= url('/services/it-infrastructure-integration') ?>" class="hover:text-teal-400 transition-colors">Infrastructure</a></li>
+                        <li><a href="<?= url('/services/cybersecurity-data-protection') ?>" class="hover:text-teal-400 transition-colors">Cybersecurity</a></li>
+                        <li><a href="<?= url('/services/document-records-management') ?>" class="hover:text-teal-400 transition-colors">Records Digitisation</a></li>
+                        <li><a href="<?= url('/services/training-managed-services') ?>" class="hover:text-teal-400 transition-colors">Capacity Building</a></li>
+                    </ul>
                 </div>
             </div>
             
             <hr class="border-slate-800 mb-8">
             
             <div class="flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 font-medium">
-                <p>&copy; <?= date('Y') ?> Integrated Systems Efficiency Consults Limited (ISEC). All rights reserved.</p>
-                <div class="flex space-x-6 mt-4 md:mt-0">
-                    <a href="<?= url('/admin/login') ?>" class="hover:text-slate-300 transition-colors"><i class="fa-solid fa-lock text-[10px] mr-1"></i> Admin Portal</a>
-                    <a href="<?= url('/privacy') ?>" class="hover:text-slate-300 transition-colors">Privacy Policy</a>
-                    <a href="<?= url('/terms') ?>" class="hover:text-slate-300 transition-colors">Terms of Service</a>
+                <div class="mb-4 md:mb-0 flex gap-4 text-[10px] font-mono">
+                    <span>RC 7251009</span>
+                    <span>CPN 009261/2024</span>
+                    <span>NITDA/59335513</span>
+                    <span>BPP 0000-0019-3476</span>
                 </div>
+                <p>&copy; 2026 Integrated Systems Efficiency Consults Limited. All rights reserved.</p>
             </div>
         </div>
     </footer>

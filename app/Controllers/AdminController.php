@@ -1886,4 +1886,23 @@ class AdminController extends Controller {
 
         $response->redirect('/admin/dynamic-pages');
     }
+
+    // ==========================================
+    // PAYMENTS
+    // ==========================================
+    public function payments(Request $request, Response $response): string {
+        // Assuming admin can view payments if they can manage users or settings.
+        if (!has_permission('manage_users') && !has_permission('manage_settings')) {
+            $this->checkPermission('manage_settings');
+        }
+        
+        $db = \App\Models\Payment::getDB();
+        $stmt = $db->query("SELECT * FROM payments ORDER BY id DESC");
+        $payments = $stmt->fetchAll();
+
+        return $this->render('admin/payments/index', [
+            'title' => 'Payment Transactions',
+            'payments' => $payments
+        ]);
+    }
 }

@@ -5,7 +5,7 @@
     </div>
     <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 to-slate-900/80 z-0"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-4">
-        <span class="text-xs font-bold text-accent uppercase tracking-widest" data-aos="fade-down">Enterprise Advisory</span>
+        <span class="text-xs font-bold text-accent uppercase tracking-widest" data-aos="fade-down">Business Transformation Partner</span>
         <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight" data-aos="fade-up">Our Identity & Philosophy</h1>
         <p class="max-w-2xl mx-auto text-slate-300 font-light text-base" data-aos="fade-up" data-aos-delay="100">
             A business transformation partner driving operational efficiency through integrated digital technologies.
@@ -27,10 +27,10 @@
                 
                 <div class="space-y-6 text-slate-600 dark:text-slate-400 font-light leading-relaxed text-base">
                     <p>
-                        ISEC is a Nigerian technology and management consulting company focused on helping organisations transform their operations through digital technologies, enterprise information management, business process automation, software engineering, IT infrastructure, cybersecurity, data management and professional advisory services.
+                        ISEC is a Nigerian technology and management consulting company focused on helping organisations transform their operations through digital technologies, off-the-shelf SaaS products, enterprise integrations, cybersecurity, and professional advisory services.
                     </p>
                     <p>
-                        We work at the intersection of business processes, technology and organisational efficiency, helping public-sector institutions, government agencies, enterprises and other organisations move from fragmented, manual and paper-driven operations to integrated, secure, intelligent and measurable digital environments.
+                        We work at the intersection of business processes and technology. For SMEs, we build the systems they actually use to grow — property management, retail POS, custom software and websites. For public-sector institutions and large enterprises, we design and implement complex, secure, and intelligent digital environments.
                     </p>
                     <p class="border-l-4 border-accent pl-6 py-2 text-lg font-medium text-slate-800 dark:text-slate-200">
                         Our approach goes beyond the deployment of technology. We first understand the client's business processes, regulatory environment, information flows, operational challenges and strategic objectives, and then design and implement technology solutions that address those requirements.
@@ -283,13 +283,13 @@
 <!-- Call to Action -->
 <section class="py-20 bg-slate-950 text-white border-t border-slate-800">
     <div class="max-w-4xl mx-auto px-4 text-center space-y-8" data-aos="zoom-in">
-        <h2 class="text-3xl sm:text-4xl font-extrabold">Have a complex operational challenge?</h2>
+        <h2 class="text-3xl sm:text-4xl font-extrabold">Stop running your business on paper.</h2>
         <p class="text-slate-300 font-light text-lg max-w-2xl mx-auto">
-            Let our consulting engineers assess your workflows and propose a measurable digital transformation roadmap.
+            Let our consulting engineers assess your workflows and propose a measurable digital transformation roadmap. Thirty minutes, no cost, no obligation.
         </p>
         <div class="pt-4">
-            <a href="<?= url('/contact') ?>" class="inline-flex items-center gap-2 bg-gradient-to-r from-accent to-secondary text-white font-bold px-10 py-4 rounded-full text-base shadow-lg shadow-accent/20 hover:scale-105 transition-all">
-                Contact Our Advisory Team <i class="fa-regular fa-calendar-check"></i>
+            <a href="<?= url('/contact?subject=Free+Assessment') ?>" class="inline-flex items-center gap-2 bg-gradient-to-r from-accent to-secondary text-white font-bold px-10 py-4 rounded-full text-base shadow-lg shadow-accent/20 hover:scale-105 transition-all">
+                Book a Free 30-Minute Assessment <i class="fa-regular fa-calendar-check"></i>
             </a>
         </div>
     </div>

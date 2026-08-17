@@ -46,6 +46,10 @@ $router->get('/downloads', [\App\Controllers\HomeController::class, 'downloads']
 $router->get('/downloads/track/{id}', [\App\Controllers\HomeController::class, 'downloadTrack']);
 $router->get('/contact', [\App\Controllers\HomeController::class, 'contact']);
 $router->post('/contact', [\App\Controllers\HomeController::class, 'contactSubmit'], [CSRFMiddleware::class]);
+
+// Payment Routes
+$router->get('/payment/verify', [\App\Controllers\PaymentController::class, 'verify']);
+$router->get('/payment/thank-you', [\App\Controllers\PaymentController::class, 'thankYou']);
 $router->post('/newsletter', [\App\Controllers\HomeController::class, 'newsletterSubmit'], [CSRFMiddleware::class]);
 $router->get('/page/{slug}', [\App\Controllers\HomeController::class, 'dynamicPage']);
 
@@ -144,6 +148,7 @@ $router->get('/admin/users/delete/{id}', [\App\Controllers\AdminController::clas
 $router->get('/admin/settings', [\App\Controllers\AdminController::class, 'settings'], [AuthMiddleware::class]);
 $router->post('/admin/settings', [\App\Controllers\AdminController::class, 'settingsUpdate'], [AuthMiddleware::class, CSRFMiddleware::class]);
 $router->get('/admin/logs', [\App\Controllers\AdminController::class, 'logs'], [AuthMiddleware::class, AdminOnlyMiddleware::class]);
+$router->get('/admin/payments', [\App\Controllers\AdminController::class, 'payments'], [AuthMiddleware::class]);
 
 // 4. Run Application
 $app->run();

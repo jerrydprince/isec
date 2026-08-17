@@ -137,6 +137,9 @@ $currentPath = $request->getPath();
                 <?php endif; ?>
 
                 <?php if ($user['role_name'] === 'Admin'): ?>
+                    <a href="<?= url('/admin/payments') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/payments' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                        <i class="fa-solid fa-credit-card text-base"></i> Payments & Subs
+                    </a>
                     <a href="<?= url('/admin/logs') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/logs' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
                         <i class="fa-solid fa-shield-halved text-base"></i> Audit Trail Logs
                     </a>

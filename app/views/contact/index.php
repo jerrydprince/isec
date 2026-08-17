@@ -112,9 +112,17 @@ $services = Service::getPublished();
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Service Interested</label>
                                 <select name="service_interested" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 focus:border-accent rounded-xl px-4 py-3 text-xs outline-none transition-all text-primary dark:text-white">
                                     <option value="">-- Select Service --</option>
-                                    <?php foreach ($services as $srv): ?>
-                                        <option value="<?= e($srv['title']) ?>"><?= e($srv['title']) ?></option>
-                                    <?php endforeach; ?>
+                                    <optgroup label="SME Solutions">
+                                        <option value="ISEC Retail POS">ISEC Retail POS</option>
+                                        <option value="Property Management System">Property Management System</option>
+                                        <option value="Business Websites & eCommerce">Business Websites & eCommerce</option>
+                                        <option value="Off-The-Shelf Software">Other Off-The-Shelf Software</option>
+                                    </optgroup>
+                                    <optgroup label="Enterprise Solutions">
+                                        <?php foreach ($services as $srv): ?>
+                                            <option value="<?= e($srv['title']) ?>"><?= e($srv['title']) ?></option>
+                                        <?php endforeach; ?>
+                                    </optgroup>
                                     <option value="Custom Advisory">Other Custom Inquiry</option>
                                 </select>
                             </div>

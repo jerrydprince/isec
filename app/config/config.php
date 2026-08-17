@@ -46,6 +46,21 @@ define('SESSION_LIFETIME', 3600); // 1 hour
 define('CSRF_KEY', 'isec_csrf_secret_key_2026');
 define('JWT_SECRET', 'isec_jwt_token_secret_key_2026_secure');
 
+// Load .env variables manually if exists
+$envFile = dirname(dirname(__DIR__)) . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        list($name, $value) = explode('=', $line, 2);
+        putenv(trim($name) . '=' . trim($value));
+    }
+}
+
+// Paystack Configuration
+define('PAYSTACK_PUBLIC_KEY', 'pk_live_0d8fc6a12455a6544c2dd0dc07d4e96e9e9bd4dc');
+define('PAYSTACK_SECRET_KEY', getenv('PAYSTACK_SECRET_KEY') ?: '');
+
 // Error Reporting
 if (APP_ENV === 'development') {
     ini_set('display_errors', 1);
