@@ -305,8 +305,7 @@ class BillingController extends AdminController {
             <p>Thank you for choosing Integrated Systems Efficiency Consults Limited.</p>
         </div>";
 
-        $mailer = new Mailer();
-        $sent = $mailer->sendHtml($invoice['client_email'], $subject, $htmlContent);
+        $sent = Mailer::send('info@isecltd.ng', $invoice['client_email'], $subject, $htmlContent, 'ISEC Limited');
 
         if ($sent) {
             if ($invoice['status'] === 'Draft') {
