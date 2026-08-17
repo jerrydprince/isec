@@ -18,7 +18,7 @@ use App\Models\Settings;
 </style>
 
 <!-- 1. Hero Section -->
-<section class="relative min-h-[90vh] bg-slate-950 overflow-hidden flex items-center justify-center text-white pt-24 pb-20">
+<section class="relative min-h-[90vh] bg-slate-950 overflow-hidden flex items-center justify-center text-white text-center pt-24 pb-20">
     <!-- Hero Background Image & Overlay -->
     <div class="absolute inset-0 z-0">
         <img src="<?= url('/assets/images/hero_bg.png') ?>" alt="ISEC Technology Background" class="w-full h-full object-cover opacity-60">
@@ -45,118 +45,6 @@ use App\Models\Settings;
         <path class="vector-line vector-line-1" d="M -100 200 L 200 400 L 500 100 L 800 600 L 1100 800" fill="none" />
         <path class="vector-line vector-line-2" d="M -100 900 L 300 700 L 600 900 L 900 400 L 1100 100" fill="none" />
     </svg>
-    
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full" data-aos="fade-up">
-        <div class="swiper hero-slider">
-            <div class="swiper-wrapper">
-                
-                <!-- Slide 1 -->
-                <div class="swiper-slide">
-                    <div class="max-w-4xl pt-8 pb-12">
-                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-teal-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span> SOFTWARE THAT RUNS YOUR BUSINESS
-                        </span>
-                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            Stop running your business on WhatsApp and paper.
-                        </h1>
-                        <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            We build the systems Nigerian businesses actually use — property management, retail POS, custom software and websites. Built in Abuja, delivered in weeks, supported for as long as you run them.
-                        </p>
-                        <div class="flex flex-col sm:flex-row items-start gap-4">
-                            <a href="<?= url('/contact?subject=Free+Assessment') ?>" class="w-full sm:w-auto bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-teal-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
-                                Book a free 30-minute assessment
-                            </a>
-                            <a href="https://wa.me/2348100794455" target="_blank" class="w-full sm:w-auto bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-8 py-4 rounded-full backdrop-blur-md transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2 group">
-                                <i class="fa-brands fa-whatsapp text-green-400 text-xl group-hover:scale-110 transition-transform"></i> Chat on WhatsApp <i class="fa-solid fa-arrow-right text-xs opacity-70 group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 2 -->
-                <div class="swiper-slide">
-                    <div class="max-w-4xl pt-8 pb-12">
-                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-emerald-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> BUSINESS TRANSFORMATION PARTNER
-                        </span>
-                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            Enterprise Advisory & Systems Transformation.
-                        </h1>
-                        <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            Delivering bespoke technical advisory and complex systems integration for the public sector, government agencies, and large organisations.
-                        </p>
-                        <div class="flex flex-col sm:flex-row items-start gap-4">
-                            <a href="<?= url('/services') ?>" class="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-emerald-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
-                                Explore Enterprise Capabilities
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="swiper-slide">
-                    <div class="max-w-4xl pt-8 pb-12">
-                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-blue-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> OFF-THE-SHELF SYSTEMS
-                        </span>
-                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            Rapid deployment solutions for growing businesses.
-                        </h1>
-                        <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            Scale your operations immediately with ISEC Property Manager and Retail POS. Track tenants, close sales, and trust your figures at the end of the day.
-                        </p>
-                        <div class="flex flex-col sm:flex-row items-start gap-4">
-                            <a href="<?= url('/#products') ?>" class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-blue-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
-                                View Products
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 4 -->
-                <div class="swiper-slide">
-                    <div class="max-w-4xl pt-8 pb-12">
-                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-purple-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span> COMPLEX INTEGRATIONS
-                        </span>
-                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            Secure, resilient IT infrastructure.
-                        </h1>
-                        <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            Our enterprise architects construct specialized integration frameworks tailored to your statutory regulations and unique operational requirements.
-                        </p>
-                        <div class="flex flex-col sm:flex-row items-start gap-4">
-                            <a href="<?= url('/contact?subject=Infrastructure+Audit') ?>" class="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-purple-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
-                                Schedule Technical Audit
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 5 -->
-                <div class="swiper-slide">
-                    <div class="max-w-4xl pt-8 pb-12">
-                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-rose-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span> DIGITAL PRESENCE
-                        </span>
-                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            Business websites that convert visitors.
-                        </h1>
-                        <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            Fast, mobile-first websites that load on Nigerian networks and turn visitors into customers. Built to be found on Google and easy to update.
-                        </p>
-                        <div class="flex flex-col sm:flex-row items-start gap-4">
-                            <a href="<?= url('/contact?subject=Quote+Business+Website') ?>" class="w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-rose-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
-                                Get a Quote
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            
-            <div class="hero-pagination absolute bottom-4 left-0 w-full flex justify-center gap-2 z-20"></div>
-        </div>
     </div>
 </section>
 
