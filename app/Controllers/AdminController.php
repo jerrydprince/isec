@@ -1264,19 +1264,29 @@ class AdminController extends Controller {
         // Handle optional certificate PDF file upload
         $pdfPath = null;
         $file = $request->getFile('pdf_file');
-        if ($file && $file['error'] === UPLOAD_ERR_OK) {
-            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            if ($ext === 'pdf') {
-                $dir = PUBLIC_DIR . '/assets/uploads/certificates/';
-                if (!is_dir($dir)) {
-                    mkdir($dir, 0777, true);
-                }
-                $filename = uniqid('cert_', true) . '.pdf';
-                if (move_uploaded_file($file['tmp_name'], $dir . $filename)) {
-                    $pdfPath = 'assets/uploads/certificates/' . $filename;
+        if ($file && $file['error'] !== UPLOAD_ERR_NO_FILE) {
+            if ($file['error'] === UPLOAD_ERR_OK) {
+                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                if ($ext === 'pdf') {
+                    $dir = PUBLIC_DIR . '/assets/uploads/certificates/';
+                    if (!is_dir($dir)) {
+                        mkdir($dir, 0777, true);
+                    }
+                    $filename = uniqid('cert_', true) . '.pdf';
+                    if (move_uploaded_file($file['tmp_name'], $dir . $filename)) {
+                        $pdfPath = 'assets/uploads/certificates/' . $filename;
+                    } else {
+                        $session->setFlash('error', 'Failed to move uploaded file. Check server permissions.');
+                        $response->redirect('/admin/certificates/create');
+                        return;
+                    }
+                } else {
+                    $session->setFlash('error', 'Only PDF files are allowed for certificate uploads.');
+                    $response->redirect('/admin/certificates/create');
+                    return;
                 }
             } else {
-                $session->setFlash('error', 'Only PDF files are allowed for certificate uploads.');
+                $session->setFlash('error', 'File upload error: ' . $file['error']);
                 $response->redirect('/admin/certificates/create');
                 return;
             }
@@ -1339,17 +1349,31 @@ class AdminController extends Controller {
 
         $pdfPath = $certificate['pdf_path'];
         $file = $request->getFile('pdf_file');
-        if ($file && $file['error'] === UPLOAD_ERR_OK) {
-            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            if ($ext === 'pdf') {
-                $dir = PUBLIC_DIR . '/assets/uploads/certificates/';
-                if (!is_dir($dir)) {
-                    mkdir($dir, 0777, true);
+        if ($file && $file['error'] !== UPLOAD_ERR_NO_FILE) {
+            if ($file['error'] === UPLOAD_ERR_OK) {
+                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                if ($ext === 'pdf') {
+                    $dir = PUBLIC_DIR . '/assets/uploads/certificates/';
+                    if (!is_dir($dir)) {
+                        mkdir($dir, 0777, true);
+                    }
+                    $filename = uniqid('cert_', true) . '.pdf';
+                    if (move_uploaded_file($file['tmp_name'], $dir . $filename)) {
+                        $pdfPath = 'assets/uploads/certificates/' . $filename;
+                    } else {
+                        $session->setFlash('error', 'Failed to move uploaded file. Check directory permissions.');
+                        $response->redirect('/admin/certificates/edit/' . $id);
+                        return;
+                    }
+                } else {
+                    $session->setFlash('error', 'Only PDF files are allowed.');
+                    $response->redirect('/admin/certificates/edit/' . $id);
+                    return;
                 }
-                $filename = uniqid('cert_', true) . '.pdf';
-                if (move_uploaded_file($file['tmp_name'], $dir . $filename)) {
-                    $pdfPath = 'assets/uploads/certificates/' . $filename;
-                }
+            } else {
+                $session->setFlash('error', 'File upload error: ' . $file['error']);
+                $response->redirect('/admin/certificates/edit/' . $id);
+                return;
             }
         }
 
