@@ -116,6 +116,20 @@ $router->get('/admin/certificates/edit/{id}', [\App\Controllers\AdminController:
 $router->post('/admin/certificates/edit/{id}', [\App\Controllers\AdminController::class, 'certificateUpdate'], [AuthMiddleware::class, CSRFMiddleware::class]);
 $router->get('/admin/certificates/delete/{id}', [\App\Controllers\AdminController::class, 'certificateDelete'], [AuthMiddleware::class]);
 
+// Billing & Invoices
+$router->get('/admin/billing', [\App\Controllers\BillingController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/admin/billing/create', [\App\Controllers\BillingController::class, 'create'], [AuthMiddleware::class]);
+$router->post('/admin/billing/create', [\App\Controllers\BillingController::class, 'store'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/billing/edit/{id}', [\App\Controllers\BillingController::class, 'edit'], [AuthMiddleware::class]);
+$router->post('/admin/billing/edit/{id}', [\App\Controllers\BillingController::class, 'update'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/billing/delete/{id}', [\App\Controllers\BillingController::class, 'delete'], [AuthMiddleware::class]);
+$router->get('/admin/billing/mark-paid/{id}', [\App\Controllers\BillingController::class, 'markPaid'], [AuthMiddleware::class]);
+$router->get('/admin/billing/send-email/{id}', [\App\Controllers\BillingController::class, 'sendEmail'], [AuthMiddleware::class]);
+
+// Public View for Invoices and Receipts (no auth required so clients can view them via email link)
+$router->get('/billing/view/{id}', [\App\Controllers\BillingController::class, 'viewInvoice']);
+$router->get('/billing/receipt/{id}', [\App\Controllers\BillingController::class, 'viewReceipt']);
+
 // Admin CMS Dynamic Page Editor
 $router->get('/admin/cms-pages', [\App\Controllers\AdminController::class, 'cmsPages'], [AuthMiddleware::class]);
 $router->post('/admin/cms-pages', [\App\Controllers\AdminController::class, 'cmsPagesUpdate'], [AuthMiddleware::class, CSRFMiddleware::class]);
