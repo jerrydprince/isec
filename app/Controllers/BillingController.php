@@ -233,7 +233,8 @@ class BillingController extends AdminController {
         $items = Invoice::getItems($id);
 
         // We render using a clean, printable layout, not the admin dashboard
-        return \App\Core\View::renderTemplate('admin/billing/invoice_template', [
+        $this->setLayout('none');
+        return $this->render('admin/billing/invoice_template', [
             'invoice' => $invoice,
             'items' => $items
         ]);
@@ -250,7 +251,8 @@ class BillingController extends AdminController {
 
         $items = Invoice::getItems($id);
 
-        return \App\Core\View::renderTemplate('admin/billing/receipt_template', [
+        $this->setLayout('none');
+        return $this->render('admin/billing/receipt_template', [
             'invoice' => $invoice,
             'items' => $items
         ]);
