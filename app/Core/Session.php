@@ -15,7 +15,9 @@ class Session {
             ini_set('session.use_only_cookies', 1);
             
             // Set cookie security flags if on HTTPS
-            $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+            $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
+                        (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') || 
+                        (($_SERVER['SERVER_PORT'] ?? 80) == 443);
             if ($isSecure) {
                 ini_set('session.cookie_secure', 1);
             }
