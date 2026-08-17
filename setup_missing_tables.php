@@ -2,8 +2,8 @@
 require_once __DIR__ . '/app/config/config.php';
 
 try {
-    $dsn = "mysql:host=localhost;dbname=isec_db;charset=utf8mb4";
-    $pdo = new PDO($dsn, "root", "", [
+    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+    $pdo = new PDO($dsn, DB_USER, DB_PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 
@@ -46,10 +46,29 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     ";
 
+    $sqlPayments = "
+    CREATE TABLE IF NOT EXISTS `payments` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) NOT NULL,
+      `email` varchar(255) NOT NULL,
+      `phone` varchar(50) DEFAULT NULL,
+      `plan` varchar(100) NOT NULL,
+      `amount` decimal(10,2) NOT NULL,
+      `reference` varchar(100) NOT NULL,
+      `status` varchar(50) NOT NULL DEFAULT 'pending',
+      `created_at` datetime DEFAULT current_timestamp(),
+      `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `reference` (`reference`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    ";
+
     $pdo->exec($sqlInvoices);
     $pdo->exec($sqlItems);
-    echo "Tables created successfully.\n";
+    $pdo->exec($sqlPayments);
+    
+    echo "<h1>Success!</h1><p>Missing tables (invoices, invoice_items, payments) have been created successfully!</p>";
 
 } catch (PDOException $e) {
-    die("Database Error: " . $e->getMessage() . "\n");
+    die("<h1>Database Error</h1><p>" . $e->getMessage() . "</p>");
 }
