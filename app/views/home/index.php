@@ -854,10 +854,6 @@ use App\Models\Settings;
             <a href="<?= url('/contact') ?>" class="w-full sm:w-auto bg-slate-900 text-white font-bold px-8 py-4 rounded-full shadow-xl hover:scale-105 hover:bg-black transition-all text-sm tracking-wide">
                 Book your free assessment
             </a>
-            <a href="https://wa.me/2348100794455" target="_blank" class="w-full sm:w-auto bg-white/20 hover:bg-white/30 border border-white/30 text-white font-bold px-8 py-4 rounded-full backdrop-blur-md transition-all text-sm tracking-wide flex items-center justify-center gap-2">
-                <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp us
-            </a>
         </div>
-        <p class="text-sm text-teal-200 mt-6 font-medium">+234 810 079 4455</p>
     </div>
 </section>
