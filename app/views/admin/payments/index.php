@@ -1,4 +1,4 @@
-<?php $this->layout('layouts/admin', ['title' => 'Payment Transactions - Admin Dashboard']) ?>
+
 
 <div class="mb-8 flex justify-between items-end">
     <div>
