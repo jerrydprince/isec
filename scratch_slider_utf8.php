@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 use App\Models\Settings;
 ?>
 <!-- Custom Swiper Styling overrides -->
@@ -54,13 +54,13 @@ use App\Models\Settings;
                 <div class="swiper-slide">
                     <div class="max-w-4xl pt-8 pb-12">
                         <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-teal-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span> <?= e(page_content('home', 'slide_1_label', 'SOFTWARE THAT RUNS YOUR BUSINESS')) ?>
+                            <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span> SOFTWARE THAT RUNS YOUR BUSINESS
                         </span>
                         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            <?= e(page_content('home', 'slide_1_title', 'Stop running your business on WhatsApp and paper.')) ?>
+                            Stop running your business on WhatsApp and paper.
                         </h1>
                         <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            <?= e(page_content('home', 'slide_1_subtitle', 'We build the systems Nigerian businesses actually use — property management, retail POS, custom software and websites. Built in Abuja, delivered in weeks, supported for as long as you run them.')) ?>
+                            We build the systems Nigerian businesses actually use — property management, retail POS, custom software and websites. Built in Abuja, delivered in weeks, supported for as long as you run them.
                         </p>
                         <div class="flex flex-col sm:flex-row items-start gap-4">
                             <a href="<?= url('/contact?subject=Free+Assessment') ?>" class="w-full sm:w-auto bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-teal-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
@@ -77,20 +77,17 @@ use App\Models\Settings;
                 <div class="swiper-slide">
                     <div class="max-w-4xl pt-8 pb-12">
                         <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-emerald-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <?= e(page_content('home', 'slide_2_label', 'BUSINESS TRANSFORMATION PARTNER')) ?>
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> BUSINESS TRANSFORMATION PARTNER
                         </span>
                         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            <?= e(page_content('home', 'slide_2_title', 'Enterprise Advisory & Systems Transformation.')) ?>
+                            Enterprise Advisory & Systems Transformation.
                         </h1>
                         <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            <?= e(page_content('home', 'slide_2_subtitle', 'Delivering bespoke technical advisory and complex systems integration for the public sector, government agencies, and large organisations.')) ?>
+                            Delivering bespoke technical advisory and complex systems integration for the public sector, government agencies, and large organisations.
                         </p>
                         <div class="flex flex-col sm:flex-row items-start gap-4">
-                            <a href="<?= url('/services') ?>" class="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-emerald-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
-                                Explore Our Solutions
-                            </a>
-                            <a href="<?= url('/projects') ?>" class="w-full sm:w-auto bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-8 py-4 rounded-full backdrop-blur-md transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
-                                View Past Work
+                            <a href="<?= url('/services') ?>" class="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-emerald-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
+                                Explore Enterprise Capabilities
                             </a>
                         </div>
                     </div>
@@ -99,14 +96,14 @@ use App\Models\Settings;
                 <!-- Slide 3 -->
                 <div class="swiper-slide">
                     <div class="max-w-4xl pt-8 pb-12">
-                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-cyan-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span> <?= e(page_content('home', 'slide_3_label', 'OFF-THE-SHELF SYSTEMS')) ?>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-blue-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
+                            <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> OFF-THE-SHELF SYSTEMS
                         </span>
                         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            <?= e(page_content('home', 'slide_3_title', 'Rapid deployment solutions for growing businesses.')) ?>
+                            Rapid deployment solutions for growing businesses.
                         </h1>
                         <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            <?= e(page_content('home', 'slide_3_subtitle', 'Scale your operations immediately with ISEC Property Manager and Retail POS. Track tenants, close sales, and trust your figures at the end of the day.')) ?>
+                            Scale your operations immediately with ISEC Property Manager and Retail POS. Track tenants, close sales, and trust your figures at the end of the day.
                         </p>
                         <div class="flex flex-col sm:flex-row items-start gap-4">
                             <a href="<?= url('/#products') ?>" class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-blue-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
@@ -120,13 +117,13 @@ use App\Models\Settings;
                 <div class="swiper-slide">
                     <div class="max-w-4xl pt-8 pb-12">
                         <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-purple-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span> <?= e(page_content('home', 'slide_4_label', 'COMPLEX INTEGRATIONS')) ?>
+                            <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span> COMPLEX INTEGRATIONS
                         </span>
                         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            <?= e(page_content('home', 'slide_4_title', 'Secure, resilient IT infrastructure.')) ?>
+                            Secure, resilient IT infrastructure.
                         </h1>
                         <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            <?= e(page_content('home', 'slide_4_subtitle', 'Our enterprise architects construct specialized integration frameworks tailored to your statutory regulations and unique operational requirements.')) ?>
+                            Our enterprise architects construct specialized integration frameworks tailored to your statutory regulations and unique operational requirements.
                         </p>
                         <div class="flex flex-col sm:flex-row items-start gap-4">
                             <a href="<?= url('/contact?subject=Infrastructure+Audit') ?>" class="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-purple-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
@@ -140,13 +137,13 @@ use App\Models\Settings;
                 <div class="swiper-slide">
                     <div class="max-w-4xl pt-8 pb-12">
                         <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-rose-400 uppercase tracking-widest mb-8 border border-white/10 shadow-lg">
-                            <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span> <?= e(page_content('home', 'slide_5_label', 'DIGITAL PRESENCE')) ?>
+                            <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span> DIGITAL PRESENCE
                         </span>
                         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight mb-8">
-                            <?= e(page_content('home', 'slide_5_title', 'Business websites that convert visitors.')) ?>
+                            Business websites that convert visitors.
                         </h1>
                         <p class="text-lg sm:text-xl md:text-2xl text-slate-300 font-light leading-relaxed mb-10 max-w-3xl">
-                            <?= e(page_content('home', 'slide_5_subtitle', 'Fast, mobile-first websites that load on Nigerian networks and turn visitors into customers. Built to be found on Google and easy to update.')) ?>
+                            Fast, mobile-first websites that load on Nigerian networks and turn visitors into customers. Built to be found on Google and easy to update.
                         </p>
                         <div class="flex flex-col sm:flex-row items-start gap-4">
                             <a href="<?= url('/contact?subject=Quote+Business+Website') ?>" class="w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-500 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-rose-500/25 hover:scale-105 hover:shadow-xl transition-all text-sm sm:text-base tracking-wide flex items-center justify-center gap-2">
