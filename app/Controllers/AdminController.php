@@ -1267,12 +1267,12 @@ class AdminController extends Controller {
         if ($file && $file['error'] !== UPLOAD_ERR_NO_FILE) {
             if ($file['error'] === UPLOAD_ERR_OK) {
                 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                if ($ext === 'pdf') {
+                if (in_array($ext, ['pdf', 'png', 'jpg', 'jpeg'])) {
                     $dir = PUBLIC_DIR . '/assets/uploads/certificates/';
                     if (!is_dir($dir)) {
                         mkdir($dir, 0777, true);
                     }
-                    $filename = uniqid('cert_', true) . '.pdf';
+                    $filename = uniqid('cert_', true) . '.' . $ext;
                     if (move_uploaded_file($file['tmp_name'], $dir . $filename)) {
                         $pdfPath = 'assets/uploads/certificates/' . $filename;
                     } else {
@@ -1281,7 +1281,7 @@ class AdminController extends Controller {
                         return;
                     }
                 } else {
-                    $session->setFlash('error', 'Only PDF files are allowed for certificate uploads.');
+                    $session->setFlash('error', 'Only PDF, PNG, or JPG files are allowed for certificate uploads.');
                     $response->redirect('/admin/certificates/create');
                     return;
                 }
@@ -1352,12 +1352,12 @@ class AdminController extends Controller {
         if ($file && $file['error'] !== UPLOAD_ERR_NO_FILE) {
             if ($file['error'] === UPLOAD_ERR_OK) {
                 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                if ($ext === 'pdf') {
+                if (in_array($ext, ['pdf', 'png', 'jpg', 'jpeg'])) {
                     $dir = PUBLIC_DIR . '/assets/uploads/certificates/';
                     if (!is_dir($dir)) {
                         mkdir($dir, 0777, true);
                     }
-                    $filename = uniqid('cert_', true) . '.pdf';
+                    $filename = uniqid('cert_', true) . '.' . $ext;
                     if (move_uploaded_file($file['tmp_name'], $dir . $filename)) {
                         $pdfPath = 'assets/uploads/certificates/' . $filename;
                     } else {
@@ -1366,7 +1366,7 @@ class AdminController extends Controller {
                         return;
                     }
                 } else {
-                    $session->setFlash('error', 'Only PDF files are allowed.');
+                    $session->setFlash('error', 'Only PDF, PNG, or JPG files are allowed.');
                     $response->redirect('/admin/certificates/edit/' . $id);
                     return;
                 }

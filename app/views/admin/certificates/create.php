@@ -44,9 +44,9 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Upload Digital PDF Certificate Copy (Optional)</label>
-                <input type="file" name="pdf_file" accept=".pdf" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850">
-                <span class="text-[10px] text-slate-400 mt-1 block">Accepts PDF format only. File is securely stored in database archives.</span>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Upload Digital Certificate Copy (Optional)</label>
+                <input type="file" name="pdf_file" accept=".pdf,.png,.jpg,.jpeg" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850">
+                <span class="text-[10px] text-slate-400 mt-1 block">Accepts PDF, PNG, or JPG formats. File is securely stored in database archives.</span>
             </div>
 
             <hr class="border-slate-100">

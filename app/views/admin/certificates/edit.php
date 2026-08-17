@@ -44,15 +44,15 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Upload Digital PDF Certificate Copy (Replaces existing)</label>
-                <input type="file" name="pdf_file" accept=".pdf" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Upload Digital Certificate Copy (Replaces existing)</label>
+                <input type="file" name="pdf_file" accept=".pdf,.png,.jpg,.jpeg" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850">
                 <?php if (!empty($certificate['pdf_path'])): ?>
                     <span class="text-[10px] text-slate-400 mt-2 block">
-                        <i class="fa-solid fa-file-pdf text-red-500 mr-1"></i> Current file: 
+                        <i class="fa-solid fa-file text-indigo-500 mr-1"></i> Current file: 
                         <a href="<?= url('/' . $certificate['pdf_path']) ?>" target="_blank" class="text-indigo-600 hover:underline font-semibold font-mono"><?= e(basename($certificate['pdf_path'])) ?></a>
                     </span>
                 <?php else: ?>
-                    <span class="text-[10px] text-slate-400 mt-1 block">Accepts PDF format only.</span>
+                    <span class="text-[10px] text-slate-400 mt-1 block">Accepts PDF, PNG, or JPG formats.</span>
                 <?php endif; ?>
             </div>
 
