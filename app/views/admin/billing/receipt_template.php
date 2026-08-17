@@ -8,10 +8,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @media print {
-            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff !important; }
+            @page { size: A4; margin: 0; }
+            body { 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact; 
+                background: url('<?= asset('assets/images/letterhead.jpg') ?>') no-repeat center center !important;
+                background-size: 100% 100% !important;
+                margin: 0;
+                padding: 0;
+            }
             .no-print { display: none !important; }
             .shadow-lg { box-shadow: none !important; }
-            .print-border { border: 1px solid #e2e8f0; }
+            .print-border { border: none !important; }
+            .document-container {
+                padding-top: 45mm !important; /* Avoid letterhead header */
+                padding-bottom: 30mm !important; /* Avoid letterhead footer */
+                padding-left: 20mm !important;
+                padding-right: 20mm !important;
+                background: transparent !important;
+            }
+        }
+        
+        /* Screen View Adjustments */
+        @media screen {
+            body {
+                background-color: #f1f5f9;
+            }
+            .document-container {
+                background: url('<?= asset('assets/images/letterhead.jpg') ?>') no-repeat center center;
+                background-size: 100% 100%;
+                min-height: 297mm; /* A4 height */
+                width: 210mm; /* A4 width */
+                padding-top: 45mm;
+                padding-bottom: 30mm;
+                padding-left: 20mm;
+                padding-right: 20mm;
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
@@ -25,40 +58,32 @@
     </div>
 
     <!-- Receipt Document -->
-    <div class="max-w-4xl mx-auto bg-white shadow-lg print-border rounded-xl p-10 sm:p-16 mb-10">
+    <div class="document-container shadow-lg print-border mb-10 bg-white relative">
         
-        <!-- Header -->
-        <div class="flex flex-col sm:flex-row justify-between items-start gap-6 border-b border-slate-200 pb-8">
+        <!-- Header / Meta Info -->
+        <div class="flex justify-between items-end border-b-2 border-indigo-100 pb-4">
             <div>
-                <h1 class="text-3xl font-black text-indigo-700 tracking-tighter uppercase">ISEC Limited</h1>
-                <p class="text-xs text-slate-500 mt-2 font-medium">Integrated Systems Efficiency Consults</p>
-                <div class="text-xs text-slate-500 mt-1 leading-relaxed">
-                    Head Office: 2nd Floor, Wing C, City Plaza,<br>
-                    Plot 596 Ahmadu Bello Way, Garki II, Abuja<br>
-                    Phone: 0803 331 4333 | 0806 877 7586<br>
-                    Email: info@isecltd.ng
-                </div>
+                <h2 class="text-4xl font-black text-indigo-900 uppercase tracking-widest mb-2">Receipt</h2>
             </div>
-            <div class="text-left sm:text-right">
-                <h2 class="text-4xl font-black text-slate-200 uppercase tracking-widest mb-2">Receipt</h2>
+            <div class="text-right">
                 <div class="text-sm font-bold text-slate-800">#<?= e($invoice['invoice_number']) ?></div>
-                <div class="text-xs text-slate-500 mt-1">Payment Date: <?= date('F j, Y', strtotime($invoice['payment_date'] ?? $invoice['updated_at'])) ?></div>
+                <div class="text-xs text-slate-600 font-semibold mt-1">Payment Date: <?= date('F j, Y', strtotime($invoice['payment_date'] ?? $invoice['updated_at'])) ?></div>
                 
-                <div class="mt-4 inline-block px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider border-2 border-emerald-500 text-emerald-600 transform -rotate-2">
+                <div class="mt-3 inline-block px-4 py-1.5 rounded text-[10px] font-black uppercase tracking-wider border-2 border-emerald-500 text-emerald-600 transform -rotate-2">
                     <i class="fa-solid fa-check-circle mr-1"></i> PAID
                 </div>
             </div>
         </div>
 
         <!-- Billed To -->
-        <div class="mt-8 mb-10">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Received From</h3>
-            <div class="text-sm font-bold text-slate-800"><?= e($invoice['client_name']) ?></div>
+        <div class="mt-6 mb-8">
+            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Received From</h3>
+            <div class="text-sm font-bold text-slate-900"><?= e($invoice['client_name']) ?></div>
             <?php if ($invoice['client_email']): ?>
-                <div class="text-xs text-slate-500 mt-0.5"><?= e($invoice['client_email']) ?></div>
+                <div class="text-xs text-slate-600 mt-0.5"><?= e($invoice['client_email']) ?></div>
             <?php endif; ?>
             <?php if ($invoice['client_address']): ?>
-                <div class="text-xs text-slate-500 mt-0.5 whitespace-pre-line"><?= e($invoice['client_address']) ?></div>
+                <div class="text-xs text-slate-600 mt-0.5 whitespace-pre-line"><?= e($invoice['client_address']) ?></div>
             <?php endif; ?>
         </div>
 
