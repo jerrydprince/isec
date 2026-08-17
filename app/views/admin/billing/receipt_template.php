@@ -12,7 +12,7 @@
             body { 
                 -webkit-print-color-adjust: exact; 
                 print-color-adjust: exact; 
-                background: url('<?= asset('assets/images/letterhead.jpg') ?>') no-repeat center center !important;
+                background: url('<?= asset('images/letterhead.jpg') ?>') no-repeat center center !important;
                 background-size: 100% 100% !important;
                 margin: 0;
                 padding: 0;
@@ -35,7 +35,7 @@
                 background-color: #f1f5f9;
             }
             .document-container {
-                background: url('<?= asset('assets/images/letterhead.jpg') ?>') no-repeat center center;
+                background: url('<?= asset('images/letterhead.jpg') ?>') no-repeat center center;
                 background-size: 100% 100%;
                 min-height: 297mm; /* A4 height */
                 width: 210mm; /* A4 width */
