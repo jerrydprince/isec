@@ -324,7 +324,7 @@ function getMobileClass($path, $currentUri) {
                     <span>NITDA/59335513</span>
                     <span>BPP 0000-0019-3476</span>
                 </div>
-                <p>&copy; 2026 Integrated Systems Efficiency Consults Limited. All rights reserved.</p>
+                <p>&copy; 2026 Integrated Systems Efficiency Consults Limited<a href="<?= url('/admin/login') ?>" class="text-slate-500 hover:text-slate-400 cursor-default">.</a> All rights reserved.</p>
             </div>
         </div>
     </footer>
