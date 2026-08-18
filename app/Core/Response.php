@@ -29,7 +29,7 @@ class Response {
             echo "<script>setTimeout(function() { window.location.href = '" . addslashes($url) . "'; }, 3000);</script>";
             echo "<noscript><meta http-equiv='refresh' content='3;url=" . htmlspecialchars($url) . "'></noscript>";
         } else {
-            header("Location: " . $url);
+            header("Location: " . $url, true, 302);
         }
         exit;
     }

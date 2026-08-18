@@ -362,7 +362,6 @@ class BillingController extends AdminController {
     }
 
     public function verifyOnlinePayment(Request $request, Response $response): string {
-        echo "<h1 style='color:red;'>I AM EXECUTING!</h1>"; exit;
         try {
             $reference = $_GET['reference'] ?? null;
             $invoiceId = (int)($_GET['invoice_id'] ?? 0);
