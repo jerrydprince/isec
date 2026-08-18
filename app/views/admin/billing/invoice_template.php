@@ -73,9 +73,13 @@
                     <div class="text-xs text-slate-600 mt-0.5">Due Date: <?= date('F j, Y', strtotime($invoice['due_date'])) ?></div>
                 <?php endif; ?>
                 
+                <?php 
+                    $isPaid = ($invoice['balance_due'] <= 0 && $invoice['amount_paid'] > 0 && $invoice['amount_paid'] >= $invoice['total_amount']);
+                    $isPartiallyPaid = (!$isPaid && $invoice['amount_paid'] > 0);
+                ?>
                 <div class="mt-3 inline-block px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider
-                    <?= $invoice['status'] === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700' ?>">
-                    <?= $invoice['status'] === 'Paid' ? 'PAID IN FULL' : 'AMOUNT DUE' ?>
+                    <?= $isPaid ? 'bg-emerald-100 text-emerald-700' : ($isPartiallyPaid ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700') ?>">
+                    <?= $isPaid ? 'PAID IN FULL' : ($isPartiallyPaid ? 'PARTIALLY PAID' : 'AMOUNT DUE') ?>
                 </div>
             </div>
         </div>
