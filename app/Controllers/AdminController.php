@@ -46,7 +46,7 @@ class AdminController extends Controller {
     public function setupDb(Request $request, Response $response): string {
         $this->checkPermission('manage_settings');
         
-        $db = \App\Core\Database::getInstance();
+        $db = \App\Core\Database::getConnection();
         $output = "Starting Database Setup...<br>";
 
         try {
