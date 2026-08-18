@@ -3,6 +3,17 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        echo "<div style='color:red; padding:20px; font-family:sans-serif; background:#fff; border:2px solid red; margin:20px;'>";
+        echo "<h2>Fatal Error Caught</h2>";
+        echo "<strong>Message:</strong> " . htmlspecialchars($error['message']) . "<br>";
+        echo "<strong>File:</strong> " . htmlspecialchars($error['file']) . " on line " . $error['line'];
+        echo "</div>";
+    }
+});
+
 /**
  * ISEC Front Controller Entry Point
  */
