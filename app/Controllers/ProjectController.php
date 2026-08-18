@@ -16,7 +16,7 @@ class ProjectController extends AdminController {
         $projects = $db->query("SELECT p.*, c.name as customer_name,
             (SELECT COUNT(id) FROM project_tasks WHERE project_id = p.id) as total_tasks,
             (SELECT COUNT(id) FROM project_tasks WHERE project_id = p.id AND status = 'Completed') as completed_tasks
-            FROM projects p 
+            FROM crm_projects p 
             LEFT JOIN customers c ON p.customer_id = c.id 
             ORDER BY p.created_at DESC")->fetchAll();
             
@@ -57,7 +57,7 @@ class ProjectController extends AdminController {
         }
 
         $db = Payment::getDB();
-        $stmt = $db->prepare("INSERT INTO projects (name, description, customer_id, status, start_date, due_date, budget) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO crm_projects (name, description, customer_id, status, start_date, due_date, budget) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$name, $description, $customer_id, $status, $start_date, $due_date, $budget]);
         
         $session->setFlash('success', 'Project created successfully.');
@@ -70,7 +70,7 @@ class ProjectController extends AdminController {
         $db = Payment::getDB();
         
         $project = $db->prepare("SELECT p.*, c.name as customer_name, c.email as customer_email 
-            FROM projects p 
+            FROM crm_projects p 
             LEFT JOIN customers c ON p.customer_id = c.id 
             WHERE p.id = ?");
         $project->execute([$id]);
@@ -122,7 +122,7 @@ class ProjectController extends AdminController {
         $id = $params['id'];
         $db = Payment::getDB();
         
-        $project = $db->prepare("SELECT * FROM projects WHERE id = ?");
+        $project = $db->prepare("SELECT * FROM crm_projects WHERE id = ?");
         $project->execute([$id]);
         $project = $project->fetch();
         
@@ -161,11 +161,11 @@ class ProjectController extends AdminController {
 
         $db = Payment::getDB();
         
-        $oldProject = $db->prepare("SELECT p.status, c.email FROM projects p LEFT JOIN customers c ON p.customer_id = c.id WHERE p.id = ?");
+        $oldProject = $db->prepare("SELECT p.status, c.email FROM crm_projects p LEFT JOIN customers c ON p.customer_id = c.id WHERE p.id = ?");
         $oldProject->execute([$id]);
         $oldProjectData = $oldProject->fetch();
         
-        $stmt = $db->prepare("UPDATE projects SET name=?, description=?, customer_id=?, status=?, start_date=?, due_date=?, budget=? WHERE id=?");
+        $stmt = $db->prepare("UPDATE crm_projects SET name=?, description=?, customer_id=?, status=?, start_date=?, due_date=?, budget=? WHERE id=?");
         $stmt->execute([$name, $description, $customer_id, $status, $start_date, $due_date, $budget, $id]);
         
         // Notify client if project status changed to Completed
@@ -188,7 +188,7 @@ class ProjectController extends AdminController {
     public function delete(Request $request, Response $response, array $params): void {
         $this->checkPermission('manage_invoices');
         $db = Payment::getDB();
-        $stmt = $db->prepare("DELETE FROM projects WHERE id = ?");
+        $stmt = $db->prepare("DELETE FROM crm_projects WHERE id = ?");
         $stmt->execute([$params['id']]);
         
         $session = new \App\Core\Session();
@@ -254,7 +254,7 @@ class ProjectController extends AdminController {
         
         // Notify client if task completed
         if ($status === 'Completed') {
-            $project = $db->prepare("SELECT p.name, c.email FROM projects p LEFT JOIN customers c ON p.customer_id = c.id WHERE p.id = ?");
+            $project = $db->prepare("SELECT p.name, c.email FROM crm_projects p LEFT JOIN customers c ON p.customer_id = c.id WHERE p.id = ?");
             $project->execute([$project_id]);
             $proj = $project->fetch();
             
