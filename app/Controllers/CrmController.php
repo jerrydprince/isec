@@ -53,9 +53,9 @@ class CrmController extends AdminController {
     public function sendCampaign(Request $request, Response $response): void {
         $this->checkPermission('manage_settings');
         
-        $type = $request->post('type');
-        $subject = $request->post('subject');
-        $message = $request->post('message');
+        $type = $request->get('type');
+        $subject = $request->get('subject');
+        $message = $request->get('message');
         
         if (empty($type) || empty($message)) {
             $session = new \App\Core\Session();
