@@ -124,11 +124,13 @@ $router->get('/admin/billing/edit/{id}', [\App\Controllers\BillingController::cl
 $router->post('/admin/billing/edit/{id}', [\App\Controllers\BillingController::class, 'update'], [AuthMiddleware::class, CSRFMiddleware::class]);
 $router->get('/admin/billing/delete/{id}', [\App\Controllers\BillingController::class, 'delete'], [AuthMiddleware::class]);
 $router->get('/admin/billing/mark-paid/{id}', [\App\Controllers\BillingController::class, 'markPaid'], [AuthMiddleware::class]);
+$router->post('/admin/billing/payment/{id}', [\App\Controllers\BillingController::class, 'addPayment'], [AuthMiddleware::class, CSRFMiddleware::class]);
 $router->get('/admin/billing/send-email/{id}', [\App\Controllers\BillingController::class, 'sendEmail'], [AuthMiddleware::class]);
 
 // Public View for Invoices and Receipts (no auth required so clients can view them via email link)
 $router->get('/billing/view/{id}', [\App\Controllers\BillingController::class, 'viewInvoice']);
 $router->get('/billing/receipt/{id}', [\App\Controllers\BillingController::class, 'viewReceipt']);
+$router->get('/billing/payment/verify', [\App\Controllers\BillingController::class, 'verifyOnlinePayment']);
 
 // Admin CMS Dynamic Page Editor
 $router->get('/admin/cms-pages', [\App\Controllers\AdminController::class, 'cmsPages'], [AuthMiddleware::class]);
@@ -163,6 +165,14 @@ $router->get('/admin/settings', [\App\Controllers\AdminController::class, 'setti
 $router->post('/admin/settings', [\App\Controllers\AdminController::class, 'settingsUpdate'], [AuthMiddleware::class, CSRFMiddleware::class]);
 $router->get('/admin/logs', [\App\Controllers\AdminController::class, 'logs'], [AuthMiddleware::class, AdminOnlyMiddleware::class]);
 $router->get('/admin/payments', [\App\Controllers\AdminController::class, 'payments'], [AuthMiddleware::class]);
+
+// Admin Accounting & Finance
+$router->get('/admin/accounting', [\App\Controllers\AccountingController::class, 'dashboard'], [AuthMiddleware::class]);
+$router->get('/admin/accounting/expenses', [\App\Controllers\AccountingController::class, 'expenses'], [AuthMiddleware::class]);
+$router->post('/admin/accounting/expenses/store', [\App\Controllers\AccountingController::class, 'storeExpense'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/accounting/expenses/delete/{id}', [\App\Controllers\AccountingController::class, 'deleteExpense'], [AuthMiddleware::class]);
+$router->get('/admin/accounting/statement', [\App\Controllers\AccountingController::class, 'statement'], [AuthMiddleware::class]);
+$router->get('/admin/accounting/reports', [\App\Controllers\AccountingController::class, 'reports'], [AuthMiddleware::class]);
 
 // 4. Run Application
 $app->run();

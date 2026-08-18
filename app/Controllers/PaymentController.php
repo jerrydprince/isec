@@ -70,11 +70,45 @@ class PaymentController extends Controller {
             $stmt = $db->prepare("INSERT INTO payments (name, email, phone, plan, amount, reference, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 'success', NOW(), NOW())");
             $stmt->execute([$name, $customerEmail, $phone, $plan, $amountPaid, $reference]);
             
+            // Auto-generate Invoice and Payment for Accounting
+            $invoiceNumber = \App\Models\Invoice::generateInvoiceNumber();
+            $invoiceId = \App\Models\Invoice::create([
+                'invoice_number' => $invoiceNumber,
+                'client_name' => $name,
+                'client_email' => $customerEmail,
+                'client_address' => $phone, // Fallback to phone if address isn't available
+                'currency_code' => 'NGN',
+                'currency_symbol' => '₦',
+                'issue_date' => date('Y-m-d'),
+                'due_date' => date('Y-m-d'),
+                'subtotal' => $amountPaid,
+                'tax_rate' => 0,
+                'tax_amount' => 0,
+                'total_amount' => $amountPaid,
+                'amount_paid' => $amountPaid,
+                'balance_due' => 0,
+                'notes' => 'Online Subscription Payment for ' . $plan,
+                'status' => 'Paid'
+            ]);
+
+            if ($invoiceId) {
+                // Add item to invoice
+                \App\Models\Invoice::addItem($invoiceId, "Subscription: " . $plan, 1, $amountPaid, $amountPaid);
+                
+                // We bypass addPayment method because we already set amount_paid/balance_due in create()
+                // Just insert the payment record
+                $stmt = $db->prepare("INSERT INTO invoice_payments (invoice_id, amount, payment_date, payment_method, reference, notes) VALUES (?, ?, ?, 'Online', ?, ?)");
+                $stmt->execute([$invoiceId, $amountPaid, date('Y-m-d'), $reference, 'Paystack Online Payment']);
+                
+                // Trigger Email to Customer with the generated Invoice link
+                $this->sendCustomerReceiptWithInvoice($name, $customerEmail, $plan, $amountPaid, $reference, $invoiceId);
+            } else {
+                // Fallback email
+                $this->sendCustomerReceipt($name, $customerEmail, $plan, $amountPaid, $reference);
+            }
+
             // Trigger Email to Admin
             $this->sendAdminNotification($name, $customerEmail, $plan, $amountPaid, $reference);
-            
-            // Trigger Email to Customer
-            $this->sendCustomerReceipt($name, $customerEmail, $plan, $amountPaid, $reference);
         }
 
         $this->redirect('/payment/thank-you?reference=' . $reference);
@@ -115,6 +149,22 @@ class PaymentController extends Controller {
                  . "Thank you for subscribing to the $plan.\n"
                  . "We have successfully received your payment of NGN " . number_format($amount, 2) . ".\n\n"
                  . "Transaction Reference: $ref\n\n"
+                 . "Our support team will be in touch shortly.\n\n"
+                 . "Regards,\nISEC Team";
+                 
+        $headers = "From: no-reply@isec.com.ng\r\n";
+        @mail($email, $subject, $message, $headers);
+    }
+    private function sendCustomerReceiptWithInvoice($name, $email, $plan, $amount, $ref, $invoiceId) {
+        $subject = "Payment Receipt & Invoice - ISEC";
+        $receiptUrl = url("/billing/receipt/{$invoiceId}");
+        
+        $message = "Dear $name,\n\n"
+                 . "Thank you for subscribing to the $plan.\n"
+                 . "We have successfully received your payment of NGN " . number_format($amount, 2) . ".\n\n"
+                 . "Transaction Reference: $ref\n\n"
+                 . "You can view and download your official receipt using the link below:\n"
+                 . "$receiptUrl\n\n"
                  . "Our support team will be in touch shortly.\n\n"
                  . "Regards,\nISEC Team";
                  

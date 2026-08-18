@@ -97,6 +97,7 @@ class BillingController extends AdminController {
             'tax_rate' => $taxRate,
             'tax_amount' => $taxAmount,
             'total_amount' => $totalAmount,
+            'balance_due' => $totalAmount,
             'notes' => $notes,
             'status' => 'Draft'
         ]);
@@ -194,6 +195,7 @@ class BillingController extends AdminController {
             'tax_rate' => $taxRate,
             'tax_amount' => $taxAmount,
             'total_amount' => $totalAmount,
+            'balance_due' => max(0, $totalAmount - $invoice['amount_paid']),
             'notes' => $notes
         ]);
 
@@ -317,5 +319,117 @@ class BillingController extends AdminController {
         }
 
         $response->redirect('/admin/billing');
+    }
+
+    public function addPayment(Request $request, Response $response, array $params): void {
+        $this->checkPermission('manage_settings');
+        $id = (int)($params['id'] ?? 0);
+        $invoice = Invoice::find($id);
+        $session = new Session();
+
+        if (!$invoice) {
+            $session->setFlash('error', 'Invoice not found.');
+            $response->redirect('/admin/billing');
+            return;
+        }
+
+        $amount = (float)$request->get('amount', 0);
+        $date = $request->get('payment_date', date('Y-m-d'));
+        $method = trim($request->get('payment_method', 'Bank Transfer'));
+        $reference = trim($request->get('reference', ''));
+        $notes = trim($request->get('notes', ''));
+
+        if ($amount <= 0) {
+            $session->setFlash('error', 'Payment amount must be greater than zero.');
+            $response->redirect('/admin/billing');
+            return;
+        }
+
+        try {
+            Invoice::addPayment($id, $amount, $date, $method, $reference, $notes);
+            AuditLog::log(current_user()['id'], 'Add Payment', "Added {$invoice['currency_symbol']}{$amount} payment to Invoice #{$invoice['invoice_number']}");
+            $session->setFlash('success', 'Payment added successfully.');
+        } catch (\Exception $e) {
+            $session->setFlash('error', 'Failed to add payment: ' . $e->getMessage());
+        }
+
+        $response->redirect('/admin/billing');
+    }
+
+    public function verifyOnlinePayment(Request $request, Response $response): string {
+        $reference = $_GET['reference'] ?? null;
+        $invoiceId = (int)($_GET['invoice_id'] ?? 0);
+
+        if (!$reference || !$invoiceId) {
+            $response->setStatusCode(400);
+            return $this->render('errors/404');
+        }
+
+        $invoice = Invoice::find($invoiceId);
+        if (!$invoice) {
+            $response->setStatusCode(404);
+            return $this->render('errors/404');
+        }
+
+        // Call Paystack API
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.paystack.co/transaction/verify/" . rawurlencode($reference),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer " . PAYSTACK_SECRET_KEY,
+                "Cache-Control: no-cache",
+            ),
+        ));
+
+        $res = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+
+        if ($err) {
+            // Display an error page but keep it public facing
+            return "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>Error verifying payment!</h2><p>Please contact support.</p></div>";
+        }
+
+        $tranx = json_decode($res);
+        if (!$tranx->status || $tranx->data->status !== 'success') {
+            return "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>Payment verification failed!</h2><p>It seems your payment was not successful.</p></div>";
+        }
+
+        // Amount comes in Kobo (if NGN) or cents, so we divide by 100
+        // But we actually only care about recording it properly in the database.
+        // What did the user intend to pay? Let's check how much was actually paid.
+        // But actually the fee was passed to the client. The base amount was the invoice amount.
+        // We can just record the amount they requested, or the amount from Paystack.
+        // Let's use `amount` divided by 100, but we need to subtract the fee if the client paid it?
+        // No, if the fee was passed, the total charged is higher, but the value we credit the invoice with is the exact amount we requested.
+        // So let's rely on what the transaction metadata says or just divide the base amount.
+        $metadata = $tranx->data->metadata ?? null;
+        $creditedAmount = isset($metadata->invoice_amount) ? (float)$metadata->invoice_amount : ($tranx->data->amount / 100);
+
+        // Check if we already recorded this reference to prevent double-crediting
+        $db = \App\Core\Database::getInstance();
+        $stmt = $db->prepare("SELECT id FROM invoice_payments WHERE reference = ?");
+        $stmt->execute([$reference]);
+        if ($stmt->fetch()) {
+            // Already processed
+            $response->redirect('/billing/receipt/' . $invoiceId);
+            return '';
+        }
+
+        try {
+            Invoice::addPayment($invoiceId, $creditedAmount, date('Y-m-d'), 'Online', $reference, "Paystack transaction: " . $reference);
+            
+            // Redirect to the receipt or the updated invoice
+            $response->redirect('/billing/receipt/' . $invoiceId);
+            return '';
+        } catch (\Exception $e) {
+            return "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>Failed to record payment</h2><p>An internal error occurred: " . e($e->getMessage()) . "</p></div>";
+        }
     }
 }

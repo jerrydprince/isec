@@ -144,6 +144,18 @@ use App\Models\Settings;
                 </div>
             </div>
 
+            <h3 class="font-bold text-sm text-slate-800 border-b pb-2 pt-6"><i class="fa-solid fa-calculator text-indigo-500 mr-2"></i> Accounting & Financial Defaults</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Currency Symbol</label>
+                    <input type="text" name="currency_symbol" value="<?= e(Settings::get('currency_symbol', '₦')) ?>" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none text-slate-850" placeholder="e.g. ₦ or $">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Expense Categories (Comma separated)</label>
+                    <input type="text" name="expense_categories" value="<?= e(Settings::get('expense_categories', 'Software/Licenses,Contractor Fees,Office Supplies,Marketing,Travel,Taxes,General')) ?>" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none text-slate-850">
+                </div>
+            </div>
+
             <hr class="border-slate-100">
 
             <div class="flex justify-end gap-3">

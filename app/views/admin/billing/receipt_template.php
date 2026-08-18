@@ -129,9 +129,19 @@
                     </div>
                 <?php endif; ?>
                 <div class="flex justify-between text-lg font-black text-slate-900 border-t border-slate-200 pt-3">
-                    <span>Amount Paid</span>
+                    <span>Total Amount</span>
                     <span class="font-mono"><?= e($invoice['currency_symbol']) ?><?= number_format($invoice['total_amount'], 2) ?></span>
                 </div>
+                <div class="flex justify-between text-lg font-black text-emerald-600 pt-2">
+                    <span>Amount Paid</span>
+                    <span class="font-mono"><?= e($invoice['currency_symbol']) ?><?= number_format($invoice['amount_paid'], 2) ?></span>
+                </div>
+                <?php if ($invoice['balance_due'] > 0): ?>
+                    <div class="flex justify-between text-sm text-rose-600 font-bold border-t border-slate-200 mt-2 pt-2">
+                        <span>Balance Due</span>
+                        <span class="font-mono"><?= e($invoice['currency_symbol']) ?><?= number_format($invoice['balance_due'], 2) ?></span>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
         

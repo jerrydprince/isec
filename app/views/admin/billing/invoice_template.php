@@ -6,6 +6,7 @@
     <title>Invoice <?= e($invoice['invoice_number']) ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
         @media print {
             @page { size: A4; margin: 0; }
@@ -129,15 +130,26 @@
                     </div>
                 <?php endif; ?>
                 <div class="flex justify-between text-lg font-black text-slate-900 border-t border-slate-200 pt-3">
-                    <span>Total</span>
+                    <span>Total Amount</span>
                     <span class="font-mono"><?= e($invoice['currency_symbol']) ?><?= number_format($invoice['total_amount'], 2) ?></span>
                 </div>
+                
+                <?php if ($invoice['amount_paid'] > 0): ?>
+                    <div class="flex justify-between text-sm text-emerald-600 font-bold pt-2">
+                        <span>Amount Paid</span>
+                        <span class="font-mono">- <?= e($invoice['currency_symbol']) ?><?= number_format($invoice['amount_paid'], 2) ?></span>
+                    </div>
+                    <div class="flex justify-between text-lg font-black text-rose-600 border-t border-slate-200 mt-2 pt-2">
+                        <span>Balance Due</span>
+                        <span class="font-mono"><?= e($invoice['currency_symbol']) ?><?= number_format($invoice['balance_due'], 2) ?></span>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
         <!-- Notes & Payment Info -->
-        <div class="mt-16 pt-8 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
+        <div class="mt-16 pt-8 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-8 print:block">
+            <div class="print:mb-8">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Payment Instructions</h3>
                 <div class="text-xs text-slate-600 bg-slate-50 p-4 rounded-lg space-y-3">
                     <div>
@@ -166,6 +178,185 @@
             <?php endif; ?>
         </div>
         
+        <?php if ($invoice['balance_due'] > 0): ?>
+            <!-- Online Payment Action (Hidden on Print) -->
+            <div class="mt-8 pt-8 border-t border-slate-200 text-center print:hidden">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Pay Your Invoice Securely Online</h3>
+                <button type="button" onclick="openOnlinePaymentModal()" class="inline-flex items-center justify-center px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-1">
+                    <i class="fa-solid fa-credit-card mr-3 text-xl"></i> Pay Online Now
+                </button>
+            </div>
+        <?php endif; ?>
     </div>
+
+    <!-- Online Payment Modal -->
+    <?php if ($invoice['balance_due'] > 0): ?>
+    <div id="onlinePaymentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-95 opacity-0 duration-200" id="onlinePaymentContent">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800">Complete Your Payment</h3>
+                <button type="button" onclick="closeOnlinePaymentModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-5">
+                <!-- Amount Input -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Amount to Pay</label>
+                    <p class="text-[10px] text-slate-500 mb-2">You can pay the full balance or make a minimum 70% deposit.</p>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold"><?= e($invoice['currency_symbol']) ?></span>
+                        <input type="number" id="payAmount" value="<?= $invoice['balance_due'] ?>" max="<?= $invoice['balance_due'] ?>" min="<?= ($invoice['total_amount'] * 0.7) ?>" step="0.01" class="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono font-bold text-lg" oninput="calculateFees()">
+                    </div>
+                    <?php if ($invoice['amount_paid'] == 0): ?>
+                        <div class="text-[10px] text-indigo-600 font-medium mt-1">Minimum deposit required: <?= e($invoice['currency_symbol']) ?><?= number_format($invoice['total_amount'] * 0.7, 2) ?> (70%)</div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Fee Breakdown -->
+                <div class="bg-slate-50 rounded-xl p-4 space-y-2 border border-slate-100">
+                    <div class="flex justify-between text-xs text-slate-500">
+                        <span>Payment Amount:</span>
+                        <span class="font-mono font-semibold" id="displayBaseAmount"><?= e($invoice['currency_symbol']) ?>0.00</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-500">
+                        <span>Processing Fee (Paystack):</span>
+                        <span class="font-mono font-semibold text-rose-500" id="displayFee"><?= e($invoice['currency_symbol']) ?>0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm font-bold text-slate-800 border-t border-slate-200 pt-2 mt-2">
+                        <span>Total to Charge:</span>
+                        <span class="font-mono" id="displayTotalCharge"><?= e($invoice['currency_symbol']) ?>0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                <button type="button" onclick="closeOnlinePaymentModal()" class="px-5 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-200 bg-slate-100 rounded-xl transition-colors">Cancel</button>
+                <button type="button" onclick="processPaystackPayment()" class="px-5 py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200 rounded-xl transition-all flex items-center">
+                    Proceed to Pay <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const balanceDue = <?= $invoice['balance_due'] ?>;
+        const totalAmount = <?= $invoice['total_amount'] ?>;
+        const amountPaid = <?= $invoice['amount_paid'] ?>;
+        const minDeposit = amountPaid > 0 ? 1 : (totalAmount * 0.7); // 70% min deposit for first payment
+        const currencySymbol = '<?= e($invoice['currency_symbol']) ?>';
+        
+        let currentFee = 0;
+        let totalCharge = 0;
+
+        function calculateFees() {
+            let amount = parseFloat(document.getElementById('payAmount').value) || 0;
+            
+            // Validate limits
+            if (amount > balanceDue) {
+                amount = balanceDue;
+                document.getElementById('payAmount').value = amount;
+            }
+            
+            // Paystack Fee Calculation: 1.5% + NGN 100 (if >= 2500)
+            // Capped at NGN 2000
+            let fee = (amount * 0.015);
+            if (amount >= 2500) {
+                fee += 100;
+            }
+            if (fee > 2000) {
+                fee = 2000;
+            }
+            
+            // Because we pass the fee to the client, the total charge is amount + fee
+            // But actually paystack recalculates based on total charge. 
+            // The exact formula to pass fee: Charge = (Amount + 100) / (1 - 0.015)
+            if (amount > 0) {
+                if (amount >= 2500) {
+                    totalCharge = (amount + 100) / (1 - 0.015);
+                } else {
+                    totalCharge = amount / (1 - 0.015);
+                }
+                
+                // Cap fee check
+                if ((totalCharge - amount) > 2000) {
+                    totalCharge = amount + 2000;
+                }
+                
+                currentFee = totalCharge - amount;
+            } else {
+                currentFee = 0;
+                totalCharge = 0;
+            }
+
+            document.getElementById('displayBaseAmount').innerText = currencySymbol + amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('displayFee').innerText = currencySymbol + currentFee.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('displayTotalCharge').innerText = currencySymbol + totalCharge.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function openOnlinePaymentModal() {
+            document.getElementById('onlinePaymentModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('onlinePaymentContent').classList.remove('scale-95', 'opacity-0');
+                document.getElementById('onlinePaymentContent').classList.add('scale-100', 'opacity-100');
+            }, 10);
+            calculateFees();
+        }
+
+        function closeOnlinePaymentModal() {
+            document.getElementById('onlinePaymentContent').classList.remove('scale-100', 'opacity-100');
+            document.getElementById('onlinePaymentContent').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                document.getElementById('onlinePaymentModal').classList.add('hidden');
+            }, 200);
+        }
+
+        function processPaystackPayment() {
+            let amount = parseFloat(document.getElementById('payAmount').value) || 0;
+            
+            if (amount < minDeposit) {
+                alert(`Minimum payment amount is ${currencySymbol}${minDeposit.toLocaleString()}`);
+                return;
+            }
+
+            if (amount > balanceDue) {
+                alert('You cannot pay more than the outstanding balance.');
+                return;
+            }
+
+            // Convert to kobo/cents for Paystack
+            const amountInKobo = Math.round(totalCharge * 100);
+
+            let handler = PaystackPop.setup({
+                key: '<?= PAYSTACK_PUBLIC_KEY ?>',
+                email: '<?= e($invoice['client_email']) ?>',
+                amount: amountInKobo,
+                currency: 'NGN', // Should map to actual currency if multi-currency
+                ref: 'INV_' + Math.floor((Math.random() * 1000000000) + 1),
+                metadata: {
+                    custom_fields: [
+                        {
+                            display_name: "Invoice Number",
+                            variable_name: "invoice_number",
+                            value: "<?= e($invoice['invoice_number']) ?>"
+                        }
+                    ],
+                    invoice_id: <?= $invoice['id'] ?>,
+                    invoice_amount: amount // Pass the base amount without fees to credit exactly this
+                },
+                callback: function(response) {
+                    // Redirect to verification URL
+                    window.location.href = '<?= url('/billing/payment/verify') ?>?reference=' + response.reference + '&invoice_id=<?= $invoice['id'] ?>';
+                },
+                onClose: function() {
+                    console.log('Payment window closed');
+                }
+            });
+
+            handler.openIframe();
+        }
+    </script>
+    <?php endif; ?>
 </body>
 </html>

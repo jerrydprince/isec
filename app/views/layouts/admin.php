@@ -117,6 +117,9 @@ $currentPath = $request->getPath();
                     <a href="<?= url('/admin/billing') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/billing') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
                         <i class="fa-solid fa-file-invoice-dollar text-base"></i> Billing & Invoices
                     </a>
+                    <a href="<?= url('/admin/accounting') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/accounting') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                        <i class="fa-solid fa-calculator text-base"></i> Accounting & Finance
+                    </a>
                     <a href="<?= url('/admin/cms-pages') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/cms-pages' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
                         <i class="fa-solid fa-file-lines w-5 text-center text-slate-400"></i>
                         <span>Static Text Blocks</span>

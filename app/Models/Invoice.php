@@ -19,6 +19,8 @@ class Invoice extends Model {
         'tax_rate',
         'tax_amount',
         'total_amount',
+        'amount_paid',
+        'balance_due',
         'notes',
         'status',
         'payment_date',
@@ -79,5 +81,61 @@ class Invoice extends Model {
             'unit_price' => $unitPrice,
             'total' => $total
         ]);
+    }
+    /**
+     * Get payments for an invoice
+     */
+    public static function getPayments(int $invoiceId): array {
+        $sql = "SELECT * FROM invoice_payments WHERE invoice_id = :id ORDER BY payment_date DESC, id DESC";
+        $stmt = static::getDB()->prepare($sql);
+        $stmt->execute(['id' => $invoiceId]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Add a payment to an invoice and update balances
+     */
+    public static function addPayment(int $invoiceId, float $amount, string $date, string $method, string $reference = '', string $notes = ''): void {
+        $db = static::getDB();
+        $db->beginTransaction();
+
+        try {
+            // 1. Insert payment record
+            $sql = "INSERT INTO invoice_payments (invoice_id, amount, payment_date, payment_method, reference, notes) VALUES (:invoice_id, :amount, :payment_date, :payment_method, :reference, :notes)";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([
+                'invoice_id' => $invoiceId,
+                'amount' => $amount,
+                'payment_date' => $date,
+                'payment_method' => $method,
+                'reference' => $reference,
+                'notes' => $notes
+            ]);
+
+            // 2. Update invoice amount_paid and balance_due
+            $invoice = static::find($invoiceId);
+            if ($invoice) {
+                $newAmountPaid = $invoice['amount_paid'] + $amount;
+                $newBalanceDue = max(0, $invoice['total_amount'] - $newAmountPaid);
+                
+                $status = $invoice['status'];
+                if ($newBalanceDue <= 0) {
+                    $status = 'Paid';
+                } elseif ($newAmountPaid > 0 && $newAmountPaid < $invoice['total_amount']) {
+                    $status = 'Partially Paid';
+                }
+
+                static::update($invoiceId, [
+                    'amount_paid' => $newAmountPaid,
+                    'balance_due' => $newBalanceDue,
+                    'status' => $status
+                ]);
+            }
+
+            $db->commit();
+        } catch (\Exception $e) {
+            $db->rollBack();
+            throw $e;
+        }
     }
 }
