@@ -58,7 +58,15 @@ class AccountingController extends AdminController {
             ORDER BY expense_date DESC LIMIT 5
         ")->fetchAll();
 
-        $transactions = array_merge($recentIncome, $recentOnlineIncome, $recentExpenses);
+        // Legacy Invoices (where amount_paid > 0 but not in invoice_payments table)
+        $legacyIncome = $db->query("
+            SELECT 'Income' as type, amount_paid as amount, DATE(COALESCE(payment_date, updated_at)) as date, COALESCE(payment_method, 'Invoice') as method, id as ref_id 
+            FROM invoices 
+            WHERE amount_paid > 0 AND id NOT IN (SELECT invoice_id FROM invoice_payments)
+            ORDER BY date DESC LIMIT 5
+        ")->fetchAll();
+
+        $transactions = array_merge($recentIncome, $recentOnlineIncome, $recentExpenses, $legacyIncome);
         usort($transactions, function($a, $b) {
             return strtotime($b['date']) - strtotime($a['date']);
         });
