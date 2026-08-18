@@ -64,20 +64,21 @@ class CrmController extends AdminController {
             return;
         }
 
-        $db = Payment::getDB();
-        
-        // Insert Campaign record
-        $stmt = $db->prepare("INSERT INTO campaigns (type, subject, message, status, sent_by, sent_at) VALUES (?, ?, ?, 'Pending', ?, NOW())");
-        $stmt->execute([$type, $subject, $message, current_user()['id']]);
-        $campaignId = $db->lastInsertId();
-
-        // Fetch all customers
-        $customers = $db->query("SELECT * FROM customers")->fetchAll();
-
         $successCount = 0;
         $status = 'Failed';
+        $campaignId = 0;
         
         try {
+            $db = Payment::getDB();
+            
+            // Insert Campaign record
+            $stmt = $db->prepare("INSERT INTO campaigns (type, subject, message, status, sent_by, sent_at) VALUES (?, ?, ?, 'Pending', ?, NOW())");
+            $stmt->execute([$type, $subject, $message, current_user()['id']]);
+            $campaignId = $db->lastInsertId();
+
+            // Fetch all customers
+            $customers = $db->query("SELECT * FROM customers")->fetchAll();
+            
             if ($type === 'Email') {
                 if (empty($subject)) {
                     $subject = "Update from ISEC Limited";
@@ -107,12 +108,14 @@ class CrmController extends AdminController {
                 }
                 $status = 'Sent';
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $session = new \App\Core\Session();
             $session->setFlash('error', 'Campaign failed: ' . $e->getMessage());
             
-            // Mark campaign as failed
-            $db->prepare("UPDATE campaigns SET status = 'Failed' WHERE id = ?")->execute([$campaignId]);
+            // Mark campaign as failed if we have an ID
+            if ($campaignId) {
+                $db->prepare("UPDATE campaigns SET status = 'Failed' WHERE id = ?")->execute([$campaignId]);
+            }
             $response->redirect('/admin/crm/campaigns');
             return;
         }
