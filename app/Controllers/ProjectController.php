@@ -9,7 +9,7 @@ use App\Helpers\Mailer;
 
 class ProjectController extends AdminController {
 
-    public function index(Request $request, Response $response): void {
+    public function index(Request $request, Response $response): string {
         $this->checkPermission('manage_invoices'); // Adjust permission later if needed
         $db = Payment::getDB();
         
@@ -20,22 +20,22 @@ class ProjectController extends AdminController {
             LEFT JOIN customers c ON p.customer_id = c.id 
             ORDER BY p.created_at DESC")->fetchAll();
             
-        $response->render('admin/project-management/index', [
+        return $this->render('admin/project-management/index', [
             'title' => 'Project Management',
             'projects' => $projects
-        ], 'layouts/admin');
+        ]);
     }
 
-    public function create(Request $request, Response $response): void {
+    public function create(Request $request, Response $response): string {
         $this->checkPermission('manage_invoices');
         $db = Payment::getDB();
         $customers = $db->query("SELECT id, name FROM customers ORDER BY name ASC")->fetchAll();
         
-        $response->render('admin/project-management/form', [
+        return $this->render('admin/project-management/form', [
             'title' => 'New Project',
             'customers' => $customers,
             'project' => null
-        ], 'layouts/admin');
+        ]);
     }
 
     public function store(Request $request, Response $response): void {
@@ -64,7 +64,7 @@ class ProjectController extends AdminController {
         $response->redirect('/admin/project-management');
     }
 
-    public function view(Request $request, Response $response, array $params): void {
+    public function view(Request $request, Response $response, array $params): string {
         $this->checkPermission('manage_invoices');
         $id = $params['id'];
         $db = Payment::getDB();
@@ -80,7 +80,7 @@ class ProjectController extends AdminController {
             $session = new \App\Core\Session();
             $session->setFlash('error', 'Project not found.');
             $response->redirect('/admin/project-management');
-            return;
+            return "";
         }
 
         $tasks = $db->prepare("SELECT * FROM project_tasks WHERE project_id = ? ORDER BY due_date ASC");
@@ -107,17 +107,17 @@ class ProjectController extends AdminController {
         $invoices->execute([$id]);
         $invoices = $invoices->fetchAll();
 
-        $response->render('admin/project-management/view', [
+        return $this->render('admin/project-management/view', [
             'title' => $project['name'] . ' - Project Details',
             'project' => $project,
             'tasks' => $tasks,
             'timeLogs' => $timeLogs,
             'files' => $files,
             'invoices' => $invoices
-        ], 'layouts/admin');
+        ]);
     }
 
-    public function edit(Request $request, Response $response, array $params): void {
+    public function edit(Request $request, Response $response, array $params): string {
         $this->checkPermission('manage_invoices');
         $id = $params['id'];
         $db = Payment::getDB();
@@ -128,16 +128,16 @@ class ProjectController extends AdminController {
         
         if (!$project) {
             $response->redirect('/admin/project-management');
-            return;
+            return "";
         }
         
         $customers = $db->query("SELECT id, name FROM customers ORDER BY name ASC")->fetchAll();
         
-        $response->render('admin/project-management/form', [
+        return $this->render('admin/project-management/form', [
             'title' => 'Edit Project',
             'project' => $project,
             'customers' => $customers
-        ], 'layouts/admin');
+        ]);
     }
 
     public function update(Request $request, Response $response, array $params): void {
