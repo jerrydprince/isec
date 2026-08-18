@@ -26,7 +26,7 @@ class AccountingController extends AdminController {
         $onlineStmt = $db->query("SELECT SUM(amount) as total FROM payments WHERE status = 'success'");
         $onlineIncome = (float)($onlineStmt->fetchColumn() ?: 0);
         
-        $totalIncome += $onlineIncome;
+        // $totalIncome += $onlineIncome;
 
         // 2. Total Expenses
         $expenseStmt = $db->query("SELECT SUM(amount) as total FROM expenses");
@@ -45,12 +45,12 @@ class AccountingController extends AdminController {
             ORDER BY payment_date DESC LIMIT 5
         ")->fetchAll();
 
-        $recentOnlineIncome = $db->query("
-            SELECT 'Income' as type, amount, DATE(created_at) as date, 'Online Payment' as method, id as ref_id 
-            FROM payments 
-            WHERE status = 'success'
-            ORDER BY created_at DESC LIMIT 5
-        ")->fetchAll();
+        // $recentOnlineIncome = $db->query("
+        //     SELECT 'Income' as type, amount, DATE(created_at) as date, 'Online Payment' as method, id as ref_id 
+        //     FROM payments 
+        //     WHERE status = 'success'
+        //     ORDER BY created_at DESC LIMIT 5
+        // ")->fetchAll();
 
         $recentExpenses = $db->query("
             SELECT 'Expense' as type, amount, expense_date as date, category as method, id as ref_id 
@@ -66,7 +66,7 @@ class AccountingController extends AdminController {
             ORDER BY date DESC LIMIT 5
         ")->fetchAll();
 
-        $transactions = array_merge($recentIncome, $recentOnlineIncome, $recentExpenses, $legacyIncome);
+        $transactions = array_merge($recentIncome, $recentExpenses, $legacyIncome);
         usort($transactions, function($a, $b) {
             return strtotime($b['date']) - strtotime($a['date']);
         });
@@ -240,7 +240,8 @@ class AccountingController extends AdminController {
         $legacyRevenue = (float)($legacyRevStmt->fetchColumn() ?: 0);
         
         $invoiceRevenue += $legacyRevenue;
-        $totalRevenue = $invoiceRevenue + $onlineRevenue;
+        // $totalRevenue = $invoiceRevenue + $onlineRevenue;
+        $totalRevenue = $invoiceRevenue;
 
         // 2. Expenses by Category
         $expStmt = $db->prepare("SELECT category, SUM(amount) as total FROM expenses WHERE expense_date BETWEEN :start AND :end GROUP BY category ORDER BY total DESC");
