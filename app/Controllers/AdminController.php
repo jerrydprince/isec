@@ -101,10 +101,14 @@ class AdminController extends Controller {
             $output .= "Created expenses table.<br>";
 
             $output .= "<br><b>Database setup completed successfully!</b>";
-            return "<div style='font-family:sans-serif; padding:20px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;'>" . $output . "</div>";
+            $html = "<div style='font-family:sans-serif; padding:20px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;'>" . $output . "</div>";
+            echo $html;
+            return $html;
 
         } catch (\PDOException $e) {
-            return "<div style='font-family:sans-serif; padding:20px; background:#fef2f2; color:#991b1b; border:1px solid #fecaca; border-radius:8px;'><b>Error:</b> " . $e->getMessage() . "</div>";
+            $html = "<div style='font-family:sans-serif; padding:20px; background:#fef2f2; color:#991b1b; border:1px solid #fecaca; border-radius:8px;'><b>Error:</b> " . $e->getMessage() . "</div>";
+            echo $html;
+            return $html;
         }
     }
 
