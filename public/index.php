@@ -163,6 +163,9 @@ $router->get('/admin/users/delete/{id}', [\App\Controllers\AdminController::clas
 // Admin Audit Logs & Settings
 $router->get('/admin/settings', [\App\Controllers\AdminController::class, 'settings'], [AuthMiddleware::class]);
 $router->post('/admin/settings', [\App\Controllers\AdminController::class, 'settingsUpdate'], [AuthMiddleware::class, CSRFMiddleware::class]);
+
+// DB Setup Route
+$router->get('/admin/setup-db', [\App\Controllers\AdminController::class, 'setupDb'], [AuthMiddleware::class]);
 $router->get('/admin/logs', [\App\Controllers\AdminController::class, 'logs'], [AuthMiddleware::class, AdminOnlyMiddleware::class]);
 $router->get('/admin/payments', [\App\Controllers\AdminController::class, 'payments'], [AuthMiddleware::class]);
 

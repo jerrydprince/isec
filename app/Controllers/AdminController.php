@@ -41,6 +41,74 @@ class AdminController extends Controller {
     }
 
     /**
+     * Database Setup for Accounting and Billing
+     */
+    public function setupDb(Request $request, Response $response): string {
+        $this->checkPermission('manage_settings');
+        
+        $db = \App\Core\Database::getInstance();
+        $output = "Starting Database Setup...<br>";
+
+        try {
+            // 1. Alter Invoices
+            try {
+                $db->exec("ALTER TABLE `invoices` ADD COLUMN `amount_paid` DECIMAL(15,2) NOT NULL DEFAULT 0.00 AFTER `total_amount`");
+                $output .= "Added amount_paid column.<br>";
+            } catch (\PDOException $e) { $output .= "amount_paid column already exists.<br>"; }
+            
+            try {
+                $db->exec("ALTER TABLE `invoices` ADD COLUMN `balance_due` DECIMAL(15,2) NOT NULL DEFAULT 0.00 AFTER `amount_paid`");
+                $output .= "Added balance_due column.<br>";
+            } catch (\PDOException $e) { $output .= "balance_due column already exists.<br>"; }
+
+            try {
+                $db->exec("ALTER TABLE `invoices` MODIFY COLUMN `status` VARCHAR(50) NOT NULL DEFAULT 'Draft'");
+                $output .= "Modified status column to VARCHAR.<br>";
+            } catch (\PDOException $e) { $output .= "Failed to modify status column: " . $e->getMessage() . "<br>"; }
+
+            // 2. Create invoice_payments table
+            $db->exec("CREATE TABLE IF NOT EXISTS `invoice_payments` (
+                `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `invoice_id` BIGINT UNSIGNED NOT NULL,
+                `amount` DECIMAL(15,2) NOT NULL,
+                `payment_date` DATE NOT NULL,
+                `payment_method` VARCHAR(50) NOT NULL,
+                `reference` VARCHAR(100) NULL,
+                `notes` TEXT NULL,
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (`invoice_id`) REFERENCES `invoices`(`id`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            $output .= "Created invoice_payments table.<br>";
+
+            // 3. Update existing invoices balances
+            $db->exec("UPDATE `invoices` SET `balance_due` = `total_amount` WHERE `amount_paid` = 0");
+            $output .= "Updated existing invoice balances.<br>";
+
+            // 4. Create expenses table
+            $db->exec("CREATE TABLE IF NOT EXISTS `expenses` (
+                `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `title` VARCHAR(255) NOT NULL,
+                `description` TEXT NULL,
+                `amount` DECIMAL(15,2) NOT NULL,
+                `category` VARCHAR(100) NOT NULL,
+                `expense_date` DATE NOT NULL,
+                `receipt_path` VARCHAR(255) NULL,
+                `recorded_by` BIGINT UNSIGNED NULL,
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (`recorded_by`) REFERENCES `users`(`id`) ON DELETE SET NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            $output .= "Created expenses table.<br>";
+
+            $output .= "<br><b>Database setup completed successfully!</b>";
+            return "<div style='font-family:sans-serif; padding:20px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;'>" . $output . "</div>";
+
+        } catch (\PDOException $e) {
+            return "<div style='font-family:sans-serif; padding:20px; background:#fef2f2; color:#991b1b; border:1px solid #fecaca; border-radius:8px;'><b>Error:</b> " . $e->getMessage() . "</div>";
+        }
+    }
+
+    /**
      * Admin Dashboard Home Page
      */
     public function index(Request $request, Response $response): string {
