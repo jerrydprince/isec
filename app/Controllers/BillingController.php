@@ -6,6 +6,9 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Models\Invoice;
+use App\Models\Project;
+use App\Models\Settings;
+use App\Core\App;
 use App\Models\AuditLog;
 use App\Helpers\Mailer;
 
@@ -367,7 +370,6 @@ class BillingController extends AdminController {
         try {
             $reference = $_GET['reference'] ?? null;
             $invoiceId = (int)($_GET['invoice_id'] ?? 0);
-            
             file_put_contents($logFile, date('Y-m-d H:i:s') . " - ref: $reference, id: $invoiceId\n", FILE_APPEND);
 
             if (!$reference || !$invoiceId) {
@@ -383,7 +385,6 @@ class BillingController extends AdminController {
                 return $this->render('errors/404');
             }
 
-            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Calling Paystack\n", FILE_APPEND);
             // Call Paystack API
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -391,7 +392,7 @@ class BillingController extends AdminController {
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 15, // Reduced timeout to prevent 30s max_execution_time
+                CURLOPT_TIMEOUT => 15,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => "GET",
                 CURLOPT_HTTPHEADER => array(
@@ -404,16 +405,18 @@ class BillingController extends AdminController {
             $err = curl_error($curl);
             curl_close($curl);
 
-            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Paystack returned. Err: $err\n", FILE_APPEND);
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Paystack returned. Err: $err, Res: $res\n", FILE_APPEND);
 
             if ($err) {
-                return "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>Error verifying payment!</h2><p>Please contact support.</p><p>Error: " . htmlspecialchars($err) . "</p></div>";
+                $msg = "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>Error verifying payment!</h2><p>Please contact support.</p><p>Error: " . htmlspecialchars($err) . "</p></div>";
+                echo $msg; return $msg;
             }
 
             $tranx = json_decode($res);
             if (!$tranx || !isset($tranx->status) || !$tranx->status || $tranx->data->status !== 'success') {
                 file_put_contents($logFile, date('Y-m-d H:i:s') . " - Paystack failed status\n", FILE_APPEND);
-                return "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>Payment verification failed!</h2><p>It seems your payment was not successful or the response was invalid.</p></div>";
+                $msg = "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>Payment verification failed!</h2><p>It seems your payment was not successful or the response was invalid.</p></div>";
+                echo $msg; return $msg;
             }
 
             $metadata = $tranx->data->metadata ?? null;
@@ -441,7 +444,8 @@ class BillingController extends AdminController {
             
         } catch (\Throwable $e) {
             file_put_contents($logFile, date('Y-m-d H:i:s') . " - CATCH THROWABLE: " . $e->getMessage() . "\n", FILE_APPEND);
-            return "<div style='font-family:sans-serif; text-align:center; padding: 50px; background:white;'><h2>System Error</h2><p>An internal error occurred: " . htmlspecialchars($e->getMessage()) . "</p></div>";
+            $msg = "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>System Error</h2><p>An internal error occurred: " . htmlspecialchars($e->getMessage()) . "</p></div>";
+            echo $msg; return $msg;
         }
     }
 }
