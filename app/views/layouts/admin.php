@@ -81,109 +81,143 @@ $currentPath = $request->getPath();
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto sidebar-scroll">
                 
                 <!-- MAIN -->
-                <div class="px-3 mt-2 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase">Main</div>
-                <a href="<?= url('/admin') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : '' ?>">
-                    <i class="fa-solid fa-chart-line w-5 text-center"></i> Dashboard
-                </a>
-                
-                <?php if (has_permission('manage_messages')): ?>
-                    <a href="<?= url('/admin/messages') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/messages') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-envelope-open-text w-5 text-center"></i> Message Inbox
-                    </a>
-                    <a href="<?= url('/admin/mail') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/mail') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-paper-plane w-5 text-center"></i> Webmail & Broadcast
-                    </a>
-                <?php endif; ?>
+                <div x-data="{ open: true }">
+                    <button @click="open = !open" class="w-full flex items-center justify-between px-3 mt-2 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase hover:text-slate-300 transition-colors focus:outline-none">
+                        <span>Main</span>
+                        <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="open" x-collapse>
+                        <a href="<?= url('/admin') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' : '' ?>">
+                            <i class="fa-solid fa-chart-line w-5 text-center"></i> Dashboard
+                        </a>
+                        
+                        <?php if (has_permission('manage_messages')): ?>
+                            <a href="<?= url('/admin/messages') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/messages') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-envelope-open-text w-5 text-center"></i> Message Inbox
+                            </a>
+                            <a href="<?= url('/admin/mail') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/mail') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-paper-plane w-5 text-center"></i> Webmail & Broadcast
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
 
                 <!-- CRM, FINANCE & PROJECTS -->
-                <div class="px-3 mt-6 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase">CRM & Operations</div>
-                <?php if ($user['role_name'] === 'Admin'): ?>
-                    <a href="<?= url('/admin/crm') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/crm') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-users w-5 text-center"></i> CRM & Marketing
-                    </a>
-                    <a href="<?= url('/admin/subscriptions') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/subscriptions') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-rotate w-5 text-center"></i> Subscriptions
-                    </a>
-                <?php endif; ?>
-                
-                <?php if (has_permission('manage_invoices')): ?>
-                    <a href="<?= url('/admin/project-management') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/project-management') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-diagram-project w-5 text-center"></i> Projects Workspace
-                    </a>
-                <?php endif; ?>
+                <div x-data="{ open: true }" class="mt-4">
+                    <button @click="open = !open" class="w-full flex items-center justify-between px-3 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase hover:text-slate-300 transition-colors focus:outline-none">
+                        <span>CRM & Operations</span>
+                        <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="open" x-collapse>
+                        <?php if ($user['role_name'] === 'Admin'): ?>
+                            <a href="<?= url('/admin/crm') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/crm') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-users w-5 text-center"></i> CRM & Marketing
+                            </a>
+                            <a href="<?= url('/admin/subscriptions') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/subscriptions') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-rotate w-5 text-center"></i> Subscriptions
+                            </a>
+                        <?php endif; ?>
+                        
+                        <?php if (has_permission('manage_invoices')): ?>
+                            <a href="<?= url('/admin/project-management') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/project-management') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-diagram-project w-5 text-center"></i> Projects Workspace
+                            </a>
+                        <?php endif; ?>
 
-                <?php if (has_permission('manage_settings')): // Note: adjust to specific permission if needed later ?>
-                    <a href="<?= url('/admin/billing') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/billing') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i> Billing & Invoices
-                    </a>
-                    <a href="<?= url('/admin/accounting') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/accounting') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-calculator w-5 text-center"></i> Finance & Accounting
-                    </a>
-                <?php endif; ?>
+                        <?php if (has_permission('manage_messages')): ?>
+                            <a href="<?= url('/admin/templates') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/templates') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-code w-5 text-center"></i> Message Templates
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (has_permission('manage_settings')): // Note: adjust to specific permission if needed later ?>
+                            <a href="<?= url('/admin/billing') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/billing') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i> Billing & Invoices
+                            </a>
+                            <a href="<?= url('/admin/accounting') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/accounting') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-calculator w-5 text-center"></i> Finance & Accounting
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
 
                 <!-- CONTENT MANAGEMENT -->
-                <div class="px-3 mt-6 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase">Website Content</div>
-                <?php if (has_permission('manage_services')): ?>
-                    <a href="<?= url('/admin/services') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/services') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-laptop-code w-5 text-center"></i> Services
-                    </a>
-                <?php endif; ?>
+                <div x-data="{ open: true }" class="mt-4">
+                    <button @click="open = !open" class="w-full flex items-center justify-between px-3 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase hover:text-slate-300 transition-colors focus:outline-none">
+                        <span>Website Content</span>
+                        <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="open" x-collapse>
+                        <?php if (has_permission('manage_services')): ?>
+                            <a href="<?= url('/admin/services') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/services') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-laptop-code w-5 text-center"></i> Services
+                            </a>
+                        <?php endif; ?>
 
-                <?php if (has_permission('manage_projects')): ?>
-                    <a href="<?= url('/admin/projects') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/projects') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-briefcase w-5 text-center"></i> Portfolio & Cases
-                    </a>
-                <?php endif; ?>
+                        <?php if (has_permission('manage_projects')): ?>
+                            <a href="<?= url('/admin/projects') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/projects') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-briefcase w-5 text-center"></i> Portfolio & Cases
+                            </a>
+                        <?php endif; ?>
 
-                <?php if (has_permission('manage_blogs')): ?>
-                    <a href="<?= url('/admin/insights') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/insights') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-newspaper w-5 text-center"></i> Insights Blog
-                    </a>
-                <?php endif; ?>
+                        <?php if (has_permission('manage_blogs')): ?>
+                            <a href="<?= url('/admin/insights') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/insights') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-newspaper w-5 text-center"></i> Insights Blog
+                            </a>
+                        <?php endif; ?>
 
-                <?php if (has_permission('manage_careers')): ?>
-                    <a href="<?= url('/admin/careers') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/careers' || $currentPath === '/admin/careers/create' || strpos($currentPath, '/admin/careers/edit') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-user-tie w-5 text-center"></i> Careers Vacancies
-                    </a>
-                    <a href="<?= url('/admin/careers/applications') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/careers/applications' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-file-import w-5 text-center"></i> Job Applications
-                    </a>
-                <?php endif; ?>
+                        <?php if (has_permission('manage_careers')): ?>
+                            <a href="<?= url('/admin/careers') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/careers' || $currentPath === '/admin/careers/create' || strpos($currentPath, '/admin/careers/edit') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-user-tie w-5 text-center"></i> Careers Vacancies
+                            </a>
+                            <a href="<?= url('/admin/careers/applications') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/careers/applications' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-file-import w-5 text-center"></i> Job Applications
+                            </a>
+                        <?php endif; ?>
 
-                <?php if (has_permission('manage_settings')): ?>
-                    <a href="<?= url('/admin/certificates') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/certificates') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-award w-5 text-center"></i> Certificates
-                    </a>
-                    <a href="<?= url('/admin/team') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/team') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-people-group w-5 text-center"></i> Leadership Team
-                    </a>
-                    <a href="<?= url('/admin/cms-pages') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/cms-pages' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-file-lines w-5 text-center"></i> Static Text Blocks
-                    </a>
-                    <a href="<?= url('/admin/dynamic-pages') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/dynamic-pages') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-layer-group w-5 text-center"></i> Dynamic Pages
-                    </a>
-                <?php endif; ?>
+                        <?php if (has_permission('manage_settings')): ?>
+                            <a href="<?= url('/admin/certificates') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/certificates') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-award w-5 text-center"></i> Certificates
+                            </a>
+                            <a href="<?= url('/admin/team') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/team') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-people-group w-5 text-center"></i> Leadership Team
+                            </a>
+                            <a href="<?= url('/admin/cms-pages') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/cms-pages' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-file-lines w-5 text-center"></i> Static Text Blocks
+                            </a>
+                            <a href="<?= url('/admin/dynamic-pages') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/dynamic-pages') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-layer-group w-5 text-center"></i> Dynamic Pages
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
 
                 <!-- SYSTEM ADMINISTRATION -->
-                <div class="px-3 mt-6 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase">System Admin</div>
-                <?php if (has_permission('manage_users')): ?>
-                    <a href="<?= url('/admin/users') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/users') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-users-gear w-5 text-center"></i> Manage Users
-                    </a>
-                <?php endif; ?>
+                <div x-data="{ open: true }" class="mt-4 mb-4">
+                    <button @click="open = !open" class="w-full flex items-center justify-between px-3 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase hover:text-slate-300 transition-colors focus:outline-none">
+                        <span>System Admin</span>
+                        <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="open" x-collapse>
+                        <?php if (has_permission('manage_users')): ?>
+                            <a href="<?= url('/admin/users') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/users') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-users-gear w-5 text-center"></i> Manage Users
+                            </a>
+                        <?php endif; ?>
 
-                <?php if (has_permission('manage_settings')): ?>
-                    <a href="<?= url('/admin/settings') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/settings' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-gears w-5 text-center"></i> System Settings
-                    </a>
-                <?php endif; ?>
+                        <?php if (has_permission('manage_settings')): ?>
+                            <a href="<?= url('/admin/settings') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/settings' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-gears w-5 text-center"></i> System Settings
+                            </a>
+                        <?php endif; ?>
 
-                <?php if ($user['role_name'] === 'Admin'): ?>
-                    <a href="<?= url('/admin/logs') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/logs' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
-                        <i class="fa-solid fa-shield-halved w-5 text-center"></i> Audit Trail Logs
-                    </a>
-                <?php endif; ?>
+                        <?php if ($user['role_name'] === 'Admin'): ?>
+                            <a href="<?= url('/admin/logs') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= $currentPath === '/admin/logs' ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                                <i class="fa-solid fa-shield-halved w-5 text-center"></i> Audit Trail Logs
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </nav>
             
             <!-- User summary panel -->

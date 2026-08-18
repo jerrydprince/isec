@@ -108,6 +108,14 @@ $router->post('/admin/mail/compose', [\App\Controllers\AdminController::class, '
 $router->post('/admin/mail/bulk', [\App\Controllers\AdminController::class, 'mailBulk'], [AuthMiddleware::class, CSRFMiddleware::class]);
 $router->post('/admin/mail/settings', [\App\Controllers\AdminController::class, 'mailSettingsUpdate'], [AuthMiddleware::class, CSRFMiddleware::class]);
 
+// Message Templates CRUD
+$router->get('/admin/templates', [\App\Controllers\TemplateController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/admin/templates/create', [\App\Controllers\TemplateController::class, 'create'], [AuthMiddleware::class]);
+$router->post('/admin/templates/create', [\App\Controllers\TemplateController::class, 'store'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/templates/{id}/edit', [\App\Controllers\TemplateController::class, 'edit'], [AuthMiddleware::class]);
+$router->post('/admin/templates/{id}/edit', [\App\Controllers\TemplateController::class, 'update'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->post('/admin/templates/{id}/delete', [\App\Controllers\TemplateController::class, 'delete'], [AuthMiddleware::class, CSRFMiddleware::class]);
+
 // Admin Certificates CRUD
 $router->get('/admin/certificates', [\App\Controllers\AdminController::class, 'certificates'], [AuthMiddleware::class]);
 $router->get('/admin/certificates/create', [\App\Controllers\AdminController::class, 'certificateCreate'], [AuthMiddleware::class]);

@@ -1222,12 +1222,14 @@ class AdminController extends Controller {
                 ]
             ];
         }
+        $templates = \App\Models\MessageTemplate::query("SELECT * FROM message_templates WHERE type = 'Email' ORDER BY name ASC");
         
         return $this->render('admin/mail/index', [
             'title' => 'Secure Mail & Broadcast Center',
             'activeAccount' => $activeAccount,
             'emails' => $emails,
             'subscribers' => $subscribers,
+            'templates' => $templates,
             'imapEnabled' => $imapEnabled,
             'imapError' => $imapError
         ]);

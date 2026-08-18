@@ -22,8 +22,22 @@ use App\Models\Settings;
     tab: 'inbox', 
     selectedEmail: null,
     emailsList: <?= htmlspecialchars(json_encode($emails), ENT_QUOTES, 'UTF-8') ?>,
+    templatesList: <?= isset($templates) ? htmlspecialchars(json_encode($templates), ENT_QUOTES, 'UTF-8') : '[]' ?>,
     searchQuery: '',
     targetGroup: 'newsletter',
+    applyTemplate(id, isCompose) {
+        if (!id) return;
+        const tmpl = this.templatesList.find(t => t.id == id);
+        if (tmpl) {
+            if (isCompose) {
+                document.getElementById('compose_subject').value = tmpl.subject || '';
+                document.getElementById('compose_body').value = tmpl.body || '';
+            } else {
+                document.getElementById('bulk_subject').value = tmpl.subject || '';
+                document.getElementById('bulk_body').value = tmpl.body || '';
+            }
+        }
+    },
     get filteredEmails() {
         if (!this.searchQuery) return this.emailsList;
         const query = this.searchQuery.toLowerCase();
@@ -214,14 +228,24 @@ use App\Models\Settings;
                     </div>
                 </div>
 
+                <div class="mb-4">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Load Template <span class="text-[9px] font-normal lowercase ml-1">(Optional)</span></label>
+                    <select @change="applyTemplate($event.target.value, true)" class="w-full md:w-1/2 bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-xs outline-none transition-all text-slate-850 cursor-pointer">
+                        <option value="">-- Select a saved template --</option>
+                        <template x-for="tmpl in templatesList" :key="tmpl.id">
+                            <option :value="tmpl.id" x-text="tmpl.name"></option>
+                        </template>
+                    </select>
+                </div>
+
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Subject *</label>
-                    <input type="text" name="subject" placeholder="Integrated Systems Architecture Audit Follow-up" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850" required>
+                    <input type="text" id="compose_subject" name="subject" placeholder="Integrated Systems Architecture Audit Follow-up" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850" required>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Email Body (HTML/Rich-Text Support) *</label>
-                    <textarea name="body" rows="10" placeholder="<h3>Dear Partner,</h3><p>Detail audit records...</p>" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all font-mono text-slate-800" required></textarea>
+                    <textarea name="body" id="compose_body" rows="10" placeholder="<h3>Dear Partner,</h3><p>Detail audit records...</p>" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all font-mono text-slate-800" required></textarea>
                 </div>
 
                 <hr class="border-slate-100">
@@ -274,14 +298,24 @@ use App\Models\Settings;
                         <span class="text-[9px] text-slate-400 mt-1 block">Separate multiple email addresses with a comma.</span>
                     </div>
 
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Load Template <span class="text-[9px] font-normal lowercase ml-1">(Optional)</span></label>
+                        <select @change="applyTemplate($event.target.value, false)" class="w-full md:w-1/2 bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-xs outline-none transition-all text-slate-850 cursor-pointer">
+                            <option value="">-- Select a saved template --</option>
+                            <template x-for="tmpl in templatesList" :key="tmpl.id">
+                                <option :value="tmpl.id" x-text="tmpl.name"></option>
+                            </template>
+                        </select>
+                    </div>
+
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Campaign Bulletin Title *</label>
-                        <input type="text" name="subject" placeholder="[ISEC System Bulletins] Q3 Systems Efficiency Frameworks" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850" required>
+                        <input type="text" id="bulk_subject" name="subject" placeholder="[ISEC System Bulletins] Q3 Systems Efficiency Frameworks" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all text-slate-850" required>
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">HTML Broadcast Body content (HTML templates supported) *</label>
-                        <textarea name="body" rows="10" placeholder="<h2>Operational Excellence Guide</h2><p>Our team has documented the following blueprints...</p>" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all font-mono text-slate-850" required></textarea>
+                        <textarea name="body" id="bulk_body" rows="10" placeholder="<h2>Operational Excellence Guide</h2><p>Our team has documented the following blueprints...</p>" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none transition-all font-mono text-slate-850" required></textarea>
                     </div>
 
                     <hr class="border-slate-100">
