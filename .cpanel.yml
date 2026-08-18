@@ -3,5 +3,6 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/isecltd1/isec_app/
     - /bin/cp $DEPLOYPATH/app/config/config.php /home/isecltd1/config_backup.php
-    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -a * $DEPLOYPATH
+    - /bin/cp -f public/index.php $DEPLOYPATH/public/index.php
     - /bin/cp /home/isecltd1/config_backup.php $DEPLOYPATH/app/config/config.php

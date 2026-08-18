@@ -40,7 +40,7 @@ class View {
         extract($params);
         
         ob_start();
-        $viewFile = App::$ROOT_DIR . "/app/views/" . $view . ".php";
+        $viewFile = App::$ROOT_DIR . "/app/Views/" . $view . ".php";
         
         if (file_exists($viewFile)) {
             include_once $viewFile;
@@ -58,7 +58,7 @@ class View {
         extract($params);
         
         ob_start();
-        $layoutFile = App::$ROOT_DIR . "/app/views/layouts/" . self::$layout . ".php";
+        $layoutFile = App::$ROOT_DIR . "/app/Views/layouts/" . self::$layout . ".php";
         
         if (file_exists($layoutFile)) {
             include_once $layoutFile;
