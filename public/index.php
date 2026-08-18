@@ -168,6 +168,29 @@ $router->post('/admin/settings', [\App\Controllers\AdminController::class, 'sett
 $router->get('/admin/setup-db', [\App\Controllers\AdminController::class, 'setupDb'], [AuthMiddleware::class]);
 $router->get('/admin/logs', [\App\Controllers\AdminController::class, 'logs'], [AuthMiddleware::class, AdminOnlyMiddleware::class]);
 
+// --- PROJECT MANAGEMENT ---
+$router->get('/admin/project-management', [\App\Controllers\ProjectController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/admin/project-management/create', [\App\Controllers\ProjectController::class, 'create'], [AuthMiddleware::class]);
+$router->post('/admin/project-management/store', [\App\Controllers\ProjectController::class, 'store'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/project-management/view/{id}', [\App\Controllers\ProjectController::class, 'view'], [AuthMiddleware::class]);
+$router->get('/admin/project-management/edit/{id}', [\App\Controllers\ProjectController::class, 'edit'], [AuthMiddleware::class]);
+$router->post('/admin/project-management/update/{id}', [\App\Controllers\ProjectController::class, 'update'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/project-management/delete/{id}', [\App\Controllers\ProjectController::class, 'delete'], [AuthMiddleware::class]);
+
+// Project Tasks
+$router->post('/admin/project-management/task/{id}', [\App\Controllers\ProjectController::class, 'taskStore'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->post('/admin/project-management/task/{id}/{task_id}', [\App\Controllers\ProjectController::class, 'taskUpdate'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/project-management/task-status/{id}/{task_id}', [\App\Controllers\ProjectController::class, 'taskStatus'], [AuthMiddleware::class]);
+$router->get('/admin/project-management/task-delete/{id}/{task_id}', [\App\Controllers\ProjectController::class, 'taskDelete'], [AuthMiddleware::class]);
+
+// Project Time Logs
+$router->post('/admin/project-management/time/{id}', [\App\Controllers\ProjectController::class, 'logTime'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/project-management/time-delete/{id}/{log_id}', [\App\Controllers\ProjectController::class, 'deleteTime'], [AuthMiddleware::class]);
+
+// Project Files
+$router->post('/admin/project-management/file/{id}', [\App\Controllers\ProjectController::class, 'uploadFile'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/project-management/file-delete/{id}/{file_id}', [\App\Controllers\ProjectController::class, 'deleteFile'], [AuthMiddleware::class]);
+
 // Admin CRM & Marketing
 $router->get('/admin/crm', [\App\Controllers\CrmController::class, 'index'], [AuthMiddleware::class]);
 $router->post('/admin/crm/customer-store', [\App\Controllers\CrmController::class, 'customerStore'], [AuthMiddleware::class, CSRFMiddleware::class]);

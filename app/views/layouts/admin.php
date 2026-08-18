@@ -109,6 +109,12 @@ $currentPath = $request->getPath();
                         <i class="fa-solid fa-envelope-open text-base"></i> Webmail & Broadcast
                     </a>
                 <?php endif; ?>
+                
+                <?php if (has_permission('manage_invoices')): ?>
+                    <a href="<?= url('/admin/project-management') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/project-management') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">
+                        <i class="fa-solid fa-diagram-project text-base"></i> Project Management
+                    </a>
+                <?php endif; ?>
 
                 <?php if (has_permission('manage_settings')): ?>
                     <a href="<?= url('/admin/certificates') ?>" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-800 hover:text-white transition-all <?= strpos($currentPath, '/admin/certificates') === 0 ? 'bg-indigo-600 text-white shadow-md' : '' ?>">

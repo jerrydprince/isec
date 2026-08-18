@@ -144,6 +144,81 @@ class AdminController extends Controller {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
             $output .= "Created subscriptions table.<br>";
 
+            // 8. Create projects table
+            $db->exec("CREATE TABLE IF NOT EXISTS `projects` (
+                `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `name` VARCHAR(255) NOT NULL,
+                `description` TEXT NULL,
+                `customer_id` BIGINT UNSIGNED NULL,
+                `status` ENUM('Not Started', 'In Progress', 'On Hold', 'Completed', 'Cancelled') NOT NULL DEFAULT 'Not Started',
+                `start_date` DATE NULL,
+                `due_date` DATE NULL,
+                `budget` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE SET NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            $output .= "Created projects table.<br>";
+
+            // 9. Create project_tasks table
+            $db->exec("CREATE TABLE IF NOT EXISTS `project_tasks` (
+                `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `project_id` BIGINT UNSIGNED NOT NULL,
+                `title` VARCHAR(255) NOT NULL,
+                `description` TEXT NULL,
+                `status` ENUM('To Do', 'In Progress', 'In Review', 'Completed') NOT NULL DEFAULT 'To Do',
+                `priority` ENUM('Low', 'Medium', 'High', 'Urgent') NOT NULL DEFAULT 'Medium',
+                `due_date` DATE NULL,
+                `assigned_to` INT NULL,
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (`project_id`) REFERENCES `projects`(`id`) ON DELETE CASCADE,
+                FOREIGN KEY (`assigned_to`) REFERENCES `users`(`id`) ON DELETE SET NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            $output .= "Created project_tasks table.<br>";
+
+            // 10. Create project_time_logs table
+            $db->exec("CREATE TABLE IF NOT EXISTS `project_time_logs` (
+                `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `project_id` BIGINT UNSIGNED NOT NULL,
+                `task_id` BIGINT UNSIGNED NULL,
+                `user_id` INT NOT NULL,
+                `hours` DECIMAL(5,2) NOT NULL,
+                `date_logged` DATE NOT NULL,
+                `notes` TEXT NULL,
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (`project_id`) REFERENCES `projects`(`id`) ON DELETE CASCADE,
+                FOREIGN KEY (`task_id`) REFERENCES `project_tasks`(`id`) ON DELETE CASCADE,
+                FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            $output .= "Created project_time_logs table.<br>";
+
+            // 11. Create project_files table
+            $db->exec("CREATE TABLE IF NOT EXISTS `project_files` (
+                `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `project_id` BIGINT UNSIGNED NOT NULL,
+                `file_name` VARCHAR(255) NOT NULL,
+                `file_path` VARCHAR(255) NOT NULL,
+                `file_size` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+                `uploaded_by` INT NOT NULL,
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (`project_id`) REFERENCES `projects`(`id`) ON DELETE CASCADE,
+                FOREIGN KEY (`uploaded_by`) REFERENCES `users`(`id`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            $output .= "Created project_files table.<br>";
+
+            // 12. Add project_id to invoices if it doesn't exist
+            try {
+                $db->exec("ALTER TABLE `invoices` ADD COLUMN `project_id` BIGINT UNSIGNED NULL AFTER `customer_id`");
+                $db->exec("ALTER TABLE `invoices` ADD CONSTRAINT `fk_invoice_project` FOREIGN KEY (`project_id`) REFERENCES `projects`(`id`) ON DELETE SET NULL");
+                $output .= "Added project_id column to invoices table.<br>";
+            } catch (\PDOException $e) {
+                // Ignore if column already exists
+                if (strpos($e->getMessage(), 'Duplicate column name') === false) {
+                    $output .= "<span style='color:orange;'>Warning altering invoices: " . $e->getMessage() . "</span><br>";
+                }
+            }
+
             $output .= "<br><b>Database setup completed successfully!</b>";
             $html = "<div style='font-family:sans-serif; padding:20px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;'>" . $output . "</div>";
             echo $html;
