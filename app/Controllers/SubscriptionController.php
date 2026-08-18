@@ -243,22 +243,28 @@ class SubscriptionController extends AdminController {
 
         if (in_array('Email', $channels) && !empty($sub['client_email'])) {
             $templateKey = $templateType === '14_days' ? 'sub_email_14' : 'sub_email_0';
-            $body = strtr(Settings::get($templateKey, ''), $replacements);
+            $defaultTpl = "Dear {client_name},\n\nThis is a reminder for your subscription: {service_name}.\nAmount Due: {cost}\nDue Date: {due_date}\n\nPlease ensure payment is made promptly.\n\nThank you.";
+            $body = strtr(Settings::get($templateKey, $defaultTpl), $replacements);
             $subject = $templateType === '14_days' ? "Upcoming Renewal: {$sub['service_name']}" : "URGENT Renewal: {$sub['service_name']}";
-            Mailer::send('no-reply@isecltd.ng', $sub['client_email'], $subject, nl2br($body));
+            
+            // Format as HTML since Mailer uses HTML content-type
+            $htmlBody = "<h3>$subject</h3><p>" . nl2br($body) . "</p>";
+            Mailer::send('no-reply@isecltd.ng', $sub['client_email'], $subject, $htmlBody);
             $sentCount++;
         }
 
         if (in_array('SMS', $channels) && !empty($sub['client_phone'])) {
             $templateKey = $templateType === '14_days' ? 'sub_sms_14' : 'sub_sms_0';
-            $body = strtr(Settings::get($templateKey, ''), $replacements);
+            $defaultTpl = "Reminder: Your subscription {service_name} of {cost} is due on {due_date}. Please pay promptly. - ISEC";
+            $body = strtr(Settings::get($templateKey, $defaultTpl), $replacements);
             SmsHelper::sendSms($sub['client_phone'], $body);
             $sentCount++;
         }
 
         if (in_array('WhatsApp', $channels) && !empty($sub['client_phone'])) {
             $templateKey = $templateType === '14_days' ? 'sub_wa_14' : 'sub_wa_0';
-            $body = strtr(Settings::get($templateKey, ''), $replacements);
+            $defaultTpl = "Hello {client_name}, this is a reminder for your subscription {service_name}. Amount Due: {cost} on {due_date}.";
+            $body = strtr(Settings::get($templateKey, $defaultTpl), $replacements);
             SmsHelper::sendWhatsApp($sub['client_phone'], $body);
             $sentCount++;
         }
