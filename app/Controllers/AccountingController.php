@@ -18,8 +18,8 @@ class AccountingController extends AdminController {
 
         $db = Invoice::getDB();
 
-        // 1. Total Income from Invoices (Amount Paid)
-        $incomeStmt = $db->query("SELECT SUM(amount_paid) as total FROM invoices WHERE status != 'Cancelled'");
+        // 1. Total Income from Invoices (Amount Paid or total_amount if legacy Paid)
+        $incomeStmt = $db->query("SELECT SUM(CASE WHEN amount_paid > 0 THEN amount_paid WHEN status = 'Paid' THEN total_amount ELSE 0 END) as total FROM invoices WHERE status != 'Cancelled'");
         $totalIncome = (float)($incomeStmt->fetchColumn() ?: 0);
 
         // Add pure online payments that aren't tied to invoices (if any)
@@ -32,8 +32,8 @@ class AccountingController extends AdminController {
         $expenseStmt = $db->query("SELECT SUM(amount) as total FROM expenses");
         $totalExpenses = (float)($expenseStmt->fetchColumn() ?: 0);
 
-        // 3. Outstanding Receivables
-        $receivableStmt = $db->query("SELECT SUM(balance_due) as total FROM invoices WHERE status != 'Cancelled'");
+        // 3. Outstanding Receivables (balance_due or total_amount if legacy Sent)
+        $receivableStmt = $db->query("SELECT SUM(CASE WHEN balance_due > 0 THEN balance_due WHEN status = 'Sent' THEN total_amount ELSE 0 END) as total FROM invoices WHERE status != 'Cancelled'");
         $totalReceivables = (float)($receivableStmt->fetchColumn() ?: 0);
 
         $netProfit = $totalIncome - $totalExpenses;
