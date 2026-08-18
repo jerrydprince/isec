@@ -167,7 +167,11 @@ $router->post('/admin/settings', [\App\Controllers\AdminController::class, 'sett
 // DB Setup Route
 $router->get('/admin/setup-db', [\App\Controllers\AdminController::class, 'setupDb'], [AuthMiddleware::class]);
 $router->get('/admin/logs', [\App\Controllers\AdminController::class, 'logs'], [AuthMiddleware::class, AdminOnlyMiddleware::class]);
-$router->get('/admin/payments', [\App\Controllers\AdminController::class, 'payments'], [AuthMiddleware::class]);
+
+// Admin CRM & Marketing
+$router->get('/admin/crm', [\App\Controllers\CrmController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/admin/crm/campaigns', [\App\Controllers\CrmController::class, 'campaigns'], [AuthMiddleware::class]);
+$router->post('/admin/crm/campaigns/send', [\App\Controllers\CrmController::class, 'sendCampaign'], [AuthMiddleware::class, CSRFMiddleware::class]);
 
 // Admin Accounting & Finance
 $router->get('/admin/accounting', [\App\Controllers\AccountingController::class, 'dashboard'], [AuthMiddleware::class]);

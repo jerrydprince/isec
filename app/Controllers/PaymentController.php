@@ -69,6 +69,10 @@ class PaymentController extends Controller {
             $db = Payment::getDB();
             $stmt = $db->prepare("INSERT INTO payments (name, email, phone, plan, amount, reference, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 'success', NOW(), NOW())");
             $stmt->execute([$name, $customerEmail, $phone, $plan, $amountPaid, $reference]);
+
+            // Upsert Customer to CRM
+            $stmtCustomer = $db->prepare("INSERT INTO customers (name, email, phone, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW()) ON DUPLICATE KEY UPDATE name = VALUES(name), phone = VALUES(phone), updated_at = NOW()");
+            $stmtCustomer->execute([$name, $customerEmail, $phone]);
             
             // Auto-generate Invoice and Payment for Accounting
             $invoiceNumber = \App\Models\Invoice::generateInvoiceNumber();

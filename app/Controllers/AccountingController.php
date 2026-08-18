@@ -38,11 +38,18 @@ class AccountingController extends AdminController {
 
         $netProfit = $totalIncome - $totalExpenses;
 
-        // Recent Transactions (Last 5 Payments & Last 5 Expenses)
+        // Recent Transactions (Last 5 Payments & Last 5 Expenses & Last 5 Online Payments)
         $recentIncome = $db->query("
             SELECT 'Income' as type, amount, payment_date as date, payment_method as method, invoice_id as ref_id 
             FROM invoice_payments 
             ORDER BY payment_date DESC LIMIT 5
+        ")->fetchAll();
+
+        $recentOnlineIncome = $db->query("
+            SELECT 'Income' as type, amount, DATE(created_at) as date, 'Online Payment' as method, id as ref_id 
+            FROM payments 
+            WHERE status = 'success'
+            ORDER BY created_at DESC LIMIT 5
         ")->fetchAll();
 
         $recentExpenses = $db->query("
@@ -51,7 +58,7 @@ class AccountingController extends AdminController {
             ORDER BY expense_date DESC LIMIT 5
         ")->fetchAll();
 
-        $transactions = array_merge($recentIncome, $recentExpenses);
+        $transactions = array_merge($recentIncome, $recentOnlineIncome, $recentExpenses);
         usort($transactions, function($a, $b) {
             return strtotime($b['date']) - strtotime($a['date']);
         });

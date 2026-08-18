@@ -100,6 +100,30 @@ class AdminController extends Controller {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
             $output .= "Created expenses table.<br>";
 
+            // 5. Create customers table for CRM
+            $db->exec("CREATE TABLE IF NOT EXISTS `customers` (
+                `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `name` VARCHAR(255) NOT NULL,
+                `email` VARCHAR(255) NOT NULL UNIQUE,
+                `phone` VARCHAR(50) NULL,
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            $output .= "Created customers table.<br>";
+
+            // 6. Create campaigns table for CRM
+            $db->exec("CREATE TABLE IF NOT EXISTS `campaigns` (
+                `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                `type` ENUM('Email', 'SMS', 'WhatsApp') NOT NULL,
+                `subject` VARCHAR(255) NULL,
+                `message` TEXT NOT NULL,
+                `status` ENUM('Pending', 'Sent', 'Failed') NOT NULL DEFAULT 'Sent',
+                `sent_by` INT NULL,
+                `sent_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (`sent_by`) REFERENCES `users`(`id`) ON DELETE SET NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+            $output .= "Created campaigns table.<br>";
+
             $output .= "<br><b>Database setup completed successfully!</b>";
             $html = "<div style='font-family:sans-serif; padding:20px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;'>" . $output . "</div>";
             echo $html;
