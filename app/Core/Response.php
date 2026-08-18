@@ -21,7 +21,16 @@ class Response {
         if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
             $url = BASE_URL . $url;
         }
-        header("Location: " . $url);
+        if (headers_sent($file, $line)) {
+            echo "<div style='padding:20px; font-family:sans-serif; text-align:center;'>";
+            echo "<p style='color:red; font-weight:bold;'>Debug: Headers already sent in $file on line $line. A background error or whitespace prevented automatic redirect.</p>";
+            echo "<p>If you are not redirected automatically, <a href='".htmlspecialchars($url)."' style='color:blue; text-decoration:underline;'>click here to continue</a>.</p>";
+            echo "</div>";
+            echo "<script>setTimeout(function() { window.location.href = '" . addslashes($url) . "'; }, 3000);</script>";
+            echo "<noscript><meta http-equiv='refresh' content='3;url=" . htmlspecialchars($url) . "'></noscript>";
+        } else {
+            header("Location: " . $url);
+        }
         exit;
     }
 
