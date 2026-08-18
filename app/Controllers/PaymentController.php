@@ -135,44 +135,41 @@ class PaymentController extends Controller {
     private function sendAdminNotification($name, $email, $plan, $amount, $ref) {
         $adminEmail = Settings::get('contact_email', 'info@isec.com.ng');
         $subject = "New Plan Subscription: $plan";
-        $message = "A new payment has been received.\n\n"
-                 . "Customer: $name\n"
-                 . "Email: $email\n"
-                 . "Plan: $plan\n"
-                 . "Amount: NGN " . number_format($amount, 2) . "\n"
-                 . "Reference: $ref\n\n"
-                 . "Please check the admin dashboard for more details.";
+        $message = "<h3>A new payment has been received.</h3>"
+                 . "<p><strong>Customer:</strong> $name<br>"
+                 . "<strong>Email:</strong> $email<br>"
+                 . "<strong>Plan:</strong> $plan<br>"
+                 . "<strong>Amount:</strong> NGN " . number_format($amount, 2) . "<br>"
+                 . "<strong>Reference:</strong> $ref</p>"
+                 . "<p>Please check the admin dashboard for more details.</p>";
                  
-        $headers = "From: no-reply@isec.com.ng\r\n";
-        @mail($adminEmail, $subject, $message, $headers);
+        \App\Helpers\Mailer::send('no-reply@isec.com.ng', $adminEmail, $subject, $message);
     }
     
     private function sendCustomerReceipt($name, $email, $plan, $amount, $ref) {
         $subject = "Payment Receipt - ISEC";
-        $message = "Dear $name,\n\n"
-                 . "Thank you for subscribing to the $plan.\n"
-                 . "We have successfully received your payment of NGN " . number_format($amount, 2) . ".\n\n"
-                 . "Transaction Reference: $ref\n\n"
-                 . "Our support team will be in touch shortly.\n\n"
-                 . "Regards,\nISEC Team";
+        $message = "<p>Dear $name,</p>"
+                 . "<p>Thank you for subscribing to the $plan.</p>"
+                 . "<p>We have successfully received your payment of <strong>NGN " . number_format($amount, 2) . "</strong>.</p>"
+                 . "<p><strong>Transaction Reference:</strong> $ref</p>"
+                 . "<p>Our support team will be in touch shortly.</p>"
+                 . "<p>Regards,<br>ISEC Team</p>";
                  
-        $headers = "From: no-reply@isec.com.ng\r\n";
-        @mail($email, $subject, $message, $headers);
+        \App\Helpers\Mailer::send('no-reply@isec.com.ng', $email, $subject, $message);
     }
     private function sendCustomerReceiptWithInvoice($name, $email, $plan, $amount, $ref, $invoiceId) {
         $subject = "Payment Receipt & Invoice - ISEC";
         $receiptUrl = url("/billing/receipt/{$invoiceId}");
         
-        $message = "Dear $name,\n\n"
-                 . "Thank you for subscribing to the $plan.\n"
-                 . "We have successfully received your payment of NGN " . number_format($amount, 2) . ".\n\n"
-                 . "Transaction Reference: $ref\n\n"
-                 . "You can view and download your official receipt using the link below:\n"
-                 . "$receiptUrl\n\n"
-                 . "Our support team will be in touch shortly.\n\n"
-                 . "Regards,\nISEC Team";
+        $message = "<p>Dear $name,</p>"
+                 . "<p>Thank you for subscribing to the $plan.</p>"
+                 . "<p>We have successfully received your payment of <strong>NGN " . number_format($amount, 2) . "</strong>.</p>"
+                 . "<p><strong>Transaction Reference:</strong> $ref</p>"
+                 . "<p>You can view and download your official receipt using the link below:</p>"
+                 . "<p><a href='$receiptUrl'>$receiptUrl</a></p>"
+                 . "<p>Our support team will be in touch shortly.</p>"
+                 . "<p>Regards,<br>ISEC Team</p>";
                  
-        $headers = "From: no-reply@isec.com.ng\r\n";
-        @mail($email, $subject, $message, $headers);
+        \App\Helpers\Mailer::send('no-reply@isec.com.ng', $email, $subject, $message);
     }
 }

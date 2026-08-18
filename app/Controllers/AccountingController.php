@@ -42,7 +42,7 @@ class AccountingController extends AdminController {
         $recentIncome = $db->query("
             SELECT 'Income' as type, amount, payment_date as date, payment_method as method, invoice_id as ref_id 
             FROM invoice_payments 
-            ORDER BY payment_date DESC LIMIT 5
+            ORDER BY id DESC LIMIT 5
         ")->fetchAll();
 
         // $recentOnlineIncome = $db->query("
@@ -55,7 +55,7 @@ class AccountingController extends AdminController {
         $recentExpenses = $db->query("
             SELECT 'Expense' as type, amount, expense_date as date, category as method, id as ref_id 
             FROM expenses 
-            ORDER BY expense_date DESC LIMIT 5
+            ORDER BY id DESC LIMIT 5
         ")->fetchAll();
 
         // Legacy Invoices (where amount_paid > 0 OR status = 'Paid' but not in invoice_payments table)
