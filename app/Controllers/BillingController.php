@@ -425,7 +425,7 @@ class BillingController extends AdminController {
             file_put_contents($logFile, date('Y-m-d H:i:s') . " - Amount: $creditedAmount\n", FILE_APPEND);
 
             // Check if we already recorded this reference to prevent double-crediting
-            $db = \App\Core\Database::getInstance();
+            $db = \App\Core\Database::getConnection();
             $stmt = $db->prepare("SELECT id FROM invoice_payments WHERE reference = ?");
             $stmt->execute([$reference]);
             if ($stmt->fetch()) {
