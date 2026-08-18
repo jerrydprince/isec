@@ -69,7 +69,7 @@ class AdminController extends Controller {
             // 2. Create invoice_payments table
             $db->exec("CREATE TABLE IF NOT EXISTS `invoice_payments` (
                 `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                `invoice_id` BIGINT UNSIGNED NOT NULL,
+                `invoice_id` INT NOT NULL,
                 `amount` DECIMAL(15,2) NOT NULL,
                 `payment_date` DATE NOT NULL,
                 `payment_method` VARCHAR(50) NOT NULL,
@@ -93,7 +93,7 @@ class AdminController extends Controller {
                 `category` VARCHAR(100) NOT NULL,
                 `expense_date` DATE NOT NULL,
                 `receipt_path` VARCHAR(255) NULL,
-                `recorded_by` BIGINT UNSIGNED NULL,
+                `recorded_by` INT NULL,
                 `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (`recorded_by`) REFERENCES `users`(`id`) ON DELETE SET NULL
