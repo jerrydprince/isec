@@ -239,7 +239,8 @@ class AccountingController extends AdminController {
         $legacyRevStmt->execute(['start' => $startDate, 'end' => $endDate]);
         $legacyRevenue = (float)($legacyRevStmt->fetchColumn() ?: 0);
         
-        $totalRevenue = $invoiceRevenue + $onlineRevenue + $legacyRevenue;
+        $invoiceRevenue += $legacyRevenue;
+        $totalRevenue = $invoiceRevenue + $onlineRevenue;
 
         // 2. Expenses by Category
         $expStmt = $db->prepare("SELECT category, SUM(amount) as total FROM expenses WHERE expense_date BETWEEN :start AND :end GROUP BY category ORDER BY total DESC");
