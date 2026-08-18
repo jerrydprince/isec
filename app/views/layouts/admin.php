@@ -81,7 +81,8 @@ $currentPath = $request->getPath();
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto sidebar-scroll">
                 
                 <!-- MAIN -->
-                <div x-data="{ open: true }">
+                <?php $isMainOpen = in_array($currentPath, ['/admin']) || strpos($currentPath, '/admin/messages') === 0 || strpos($currentPath, '/admin/mail') === 0; ?>
+                <div x-data="{ open: <?= $isMainOpen ? 'true' : 'false' ?> }">
                     <button @click="open = !open" class="w-full flex items-center justify-between px-3 mt-2 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase hover:text-slate-300 transition-colors focus:outline-none">
                         <span>Main</span>
                         <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
@@ -103,7 +104,8 @@ $currentPath = $request->getPath();
                 </div>
 
                 <!-- CRM, FINANCE & PROJECTS -->
-                <div x-data="{ open: true }" class="mt-4">
+                <?php $isCrmOpen = strpos($currentPath, '/admin/crm') === 0 || strpos($currentPath, '/admin/subscriptions') === 0 || strpos($currentPath, '/admin/project-management') === 0 || strpos($currentPath, '/admin/templates') === 0 || strpos($currentPath, '/admin/billing') === 0 || strpos($currentPath, '/admin/accounting') === 0; ?>
+                <div x-data="{ open: <?= $isCrmOpen ? 'true' : 'false' ?> }" class="mt-4">
                     <button @click="open = !open" class="w-full flex items-center justify-between px-3 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase hover:text-slate-300 transition-colors focus:outline-none">
                         <span>CRM & Operations</span>
                         <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
@@ -142,7 +144,8 @@ $currentPath = $request->getPath();
                 </div>
 
                 <!-- CONTENT MANAGEMENT -->
-                <div x-data="{ open: true }" class="mt-4">
+                <?php $isContentOpen = strpos($currentPath, '/admin/services') === 0 || strpos($currentPath, '/admin/projects') === 0 || strpos($currentPath, '/admin/insights') === 0 || strpos($currentPath, '/admin/careers') === 0 || strpos($currentPath, '/admin/certificates') === 0 || strpos($currentPath, '/admin/team') === 0 || strpos($currentPath, '/admin/cms-pages') === 0 || strpos($currentPath, '/admin/dynamic-pages') === 0; ?>
+                <div x-data="{ open: <?= $isContentOpen ? 'true' : 'false' ?> }" class="mt-4">
                     <button @click="open = !open" class="w-full flex items-center justify-between px-3 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase hover:text-slate-300 transition-colors focus:outline-none">
                         <span>Website Content</span>
                         <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
@@ -193,7 +196,8 @@ $currentPath = $request->getPath();
                 </div>
 
                 <!-- SYSTEM ADMINISTRATION -->
-                <div x-data="{ open: true }" class="mt-4 mb-4">
+                <?php $isAdminOpen = strpos($currentPath, '/admin/users') === 0 || strpos($currentPath, '/admin/roles') === 0 || strpos($currentPath, '/admin/settings') === 0 || strpos($currentPath, '/admin/system-logs') === 0; ?>
+                <div x-data="{ open: <?= $isAdminOpen ? 'true' : 'false' ?> }" class="mt-4 mb-4">
                     <button @click="open = !open" class="w-full flex items-center justify-between px-3 mb-2 text-[10px] font-black text-slate-500 tracking-widest uppercase hover:text-slate-300 transition-colors focus:outline-none">
                         <span>System Admin</span>
                         <i class="fa-solid fa-chevron-down transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
