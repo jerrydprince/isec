@@ -58,11 +58,11 @@ class AccountingController extends AdminController {
             ORDER BY expense_date DESC LIMIT 5
         ")->fetchAll();
 
-        // Legacy Invoices (where amount_paid > 0 but not in invoice_payments table)
+        // Legacy Invoices (where amount_paid > 0 OR status = 'Paid' but not in invoice_payments table)
         $legacyIncome = $db->query("
-            SELECT 'Income' as type, amount_paid as amount, DATE(COALESCE(payment_date, updated_at)) as date, COALESCE(payment_method, 'Invoice') as method, id as ref_id 
+            SELECT 'Income' as type, CASE WHEN amount_paid > 0 THEN amount_paid ELSE total_amount END as amount, DATE(COALESCE(payment_date, updated_at)) as date, COALESCE(payment_method, 'Invoice') as method, id as ref_id 
             FROM invoices 
-            WHERE amount_paid > 0 AND id NOT IN (SELECT invoice_id FROM invoice_payments)
+            WHERE (amount_paid > 0 OR status = 'Paid') AND id NOT IN (SELECT invoice_id FROM invoice_payments)
             ORDER BY date DESC LIMIT 5
         ")->fetchAll();
 
@@ -231,7 +231,15 @@ class AccountingController extends AdminController {
         $onlineStmt->execute(['start' => $startDate, 'end' => $endDate]);
         $onlineRevenue = (float)($onlineStmt->fetchColumn() ?: 0);
         
-        $totalRevenue = $invoiceRevenue + $onlineRevenue;
+        $legacyRevStmt = $db->prepare("
+            SELECT SUM(CASE WHEN amount_paid > 0 THEN amount_paid ELSE total_amount END) FROM invoices 
+            WHERE (amount_paid > 0 OR status = 'Paid') AND id NOT IN (SELECT invoice_id FROM invoice_payments)
+            AND DATE(COALESCE(payment_date, updated_at)) BETWEEN :start AND :end
+        ");
+        $legacyRevStmt->execute(['start' => $startDate, 'end' => $endDate]);
+        $legacyRevenue = (float)($legacyRevStmt->fetchColumn() ?: 0);
+        
+        $totalRevenue = $invoiceRevenue + $onlineRevenue + $legacyRevenue;
 
         // 2. Expenses by Category
         $expStmt = $db->prepare("SELECT category, SUM(amount) as total FROM expenses WHERE expense_date BETWEEN :start AND :end GROUP BY category ORDER BY total DESC");

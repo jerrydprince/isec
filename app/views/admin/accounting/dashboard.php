@@ -7,7 +7,7 @@
         </div>
         <div class="flex flex-wrap gap-2">
             <a href="<?= url('/admin/billing') ?>" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition font-medium text-sm flex items-center gap-2" title="Record a payment against an invoice"><i class="fa-solid fa-money-bill-wave"></i> Record Income</a>
-            <a href="<?= url('/admin/accounting/expenses') ?>" class="px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition font-medium text-sm flex items-center gap-2" title="Record a new company expense"><i class="fa-solid fa-receipt"></i> Record Expense</a>
+            <a href="<?= url('/admin/accounting/expenses?action=record') ?>" class="px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition font-medium text-sm flex items-center gap-2" title="Record a new company expense"><i class="fa-solid fa-receipt"></i> Record Expense</a>
             <div class="w-px h-8 bg-slate-200 mx-1 hidden sm:block"></div>
             <a href="<?= url('/admin/accounting/reports') ?>" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-medium text-sm flex items-center gap-2"><i class="fa-solid fa-file-invoice"></i> Detailed Reports</a>
             <a href="<?= url('/admin/accounting/expenses') ?>" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition font-medium text-sm">Manage Expenses</a>

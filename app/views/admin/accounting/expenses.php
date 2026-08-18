@@ -68,6 +68,14 @@
     </div>
 </div>
 
+<?php if (isset($_GET['action']) && $_GET['action'] === 'record'): ?>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('expenseModal').classList.remove('hidden');
+    });
+</script>
+<?php endif; ?>
+
 <!-- Add Expense Modal -->
 <div id="expenseModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all scale-100 opacity-100 duration-200">
