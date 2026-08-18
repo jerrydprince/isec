@@ -1,4 +1,7 @@
 ---
 deployment:
   tasks:
-    - /bin/bash .cpanel-deploy.sh
+    - export DEPLOYPATH=/home/isecltd1/isec_app/
+    - /bin/cp $DEPLOYPATH/app/config/config.php /home/isecltd1/config_backup.php
+    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp /home/isecltd1/config_backup.php $DEPLOYPATH/app/config/config.php
