@@ -77,34 +77,44 @@ class CrmController extends AdminController {
         $successCount = 0;
         $status = 'Failed';
         
-        if ($type === 'Email') {
-            if (empty($subject)) {
-                $subject = "Update from ISEC Limited";
-            }
-            foreach ($customers as $customer) {
-                if (!empty($customer['email'])) {
-                    $htmlContent = "<div style='font-family:sans-serif; max-width:600px; margin:0 auto;'><h2>Hello {$customer['name']},</h2><p>" . nl2br(e($message)) . "</p></div>";
-                    \App\Helpers\Mailer::send('info@isecltd.ng', $customer['email'], $subject, $htmlContent, 'ISEC Limited');
-                    $successCount++;
+        try {
+            if ($type === 'Email') {
+                if (empty($subject)) {
+                    $subject = "Update from ISEC Limited";
                 }
-            }
-            $status = 'Sent';
-        } else if ($type === 'SMS') {
-            foreach ($customers as $customer) {
-                if (!empty($customer['phone'])) {
-                    SmsHelper::sendSms($customer['phone'], $message);
-                    $successCount++;
+                foreach ($customers as $customer) {
+                    if (!empty($customer['email'])) {
+                        $htmlContent = "<div style='font-family:sans-serif; max-width:600px; margin:0 auto;'><h2>Hello {$customer['name']},</h2><p>" . nl2br(e($message)) . "</p></div>";
+                        \App\Helpers\Mailer::send('info@isecltd.ng', $customer['email'], $subject, $htmlContent, 'ISEC Limited');
+                        $successCount++;
+                    }
                 }
-            }
-            $status = 'Sent';
-        } else if ($type === 'WhatsApp') {
-            foreach ($customers as $customer) {
-                if (!empty($customer['phone'])) {
-                    SmsHelper::sendWhatsApp($customer['phone'], $message);
-                    $successCount++;
+                $status = 'Sent';
+            } else if ($type === 'SMS') {
+                foreach ($customers as $customer) {
+                    if (!empty($customer['phone'])) {
+                        SmsHelper::sendSms($customer['phone'], $message);
+                        $successCount++;
+                    }
                 }
+                $status = 'Sent';
+            } else if ($type === 'WhatsApp') {
+                foreach ($customers as $customer) {
+                    if (!empty($customer['phone'])) {
+                        SmsHelper::sendWhatsApp($customer['phone'], $message);
+                        $successCount++;
+                    }
+                }
+                $status = 'Sent';
             }
-            $status = 'Sent';
+        } catch (\Exception $e) {
+            $session = new \App\Core\Session();
+            $session->setFlash('error', 'Campaign failed: ' . $e->getMessage());
+            
+            // Mark campaign as failed
+            $db->prepare("UPDATE campaigns SET status = 'Failed' WHERE id = ?")->execute([$campaignId]);
+            $response->redirect('/admin/crm/campaigns');
+            return;
         }
 
         // Update campaign status
