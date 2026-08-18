@@ -362,21 +362,28 @@ class BillingController extends AdminController {
     }
 
     public function verifyOnlinePayment(Request $request, Response $response): string {
+        $logFile = App::$ROOT_DIR . '/app/logs/debug.log';
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " - verifyOnlinePayment started\n", FILE_APPEND);
         try {
             $reference = $_GET['reference'] ?? null;
             $invoiceId = (int)($_GET['invoice_id'] ?? 0);
+            
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - ref: $reference, id: $invoiceId\n", FILE_APPEND);
 
             if (!$reference || !$invoiceId) {
+                file_put_contents($logFile, date('Y-m-d H:i:s') . " - Missing ref or id\n", FILE_APPEND);
                 $response->setStatusCode(400);
                 return $this->render('errors/404');
             }
 
             $invoice = Invoice::find($invoiceId);
             if (!$invoice) {
+                file_put_contents($logFile, date('Y-m-d H:i:s') . " - Invoice not found\n", FILE_APPEND);
                 $response->setStatusCode(404);
                 return $this->render('errors/404');
             }
 
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Calling Paystack\n", FILE_APPEND);
             // Call Paystack API
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -384,11 +391,11 @@ class BillingController extends AdminController {
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
+                CURLOPT_TIMEOUT => 15, // Reduced timeout to prevent 30s max_execution_time
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => "GET",
                 CURLOPT_HTTPHEADER => array(
-                    "Authorization: Bearer " . PAYSTACK_SECRET_KEY,
+                    "Authorization: Bearer " . (defined('PAYSTACK_SECRET_KEY') ? PAYSTACK_SECRET_KEY : ''),
                     "Cache-Control: no-cache",
                 ),
             ));
@@ -397,38 +404,44 @@ class BillingController extends AdminController {
             $err = curl_error($curl);
             curl_close($curl);
 
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Paystack returned. Err: $err\n", FILE_APPEND);
+
             if ($err) {
-                // Display an error page but keep it public facing
                 return "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>Error verifying payment!</h2><p>Please contact support.</p><p>Error: " . htmlspecialchars($err) . "</p></div>";
             }
 
             $tranx = json_decode($res);
             if (!$tranx || !isset($tranx->status) || !$tranx->status || $tranx->data->status !== 'success') {
+                file_put_contents($logFile, date('Y-m-d H:i:s') . " - Paystack failed status\n", FILE_APPEND);
                 return "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>Payment verification failed!</h2><p>It seems your payment was not successful or the response was invalid.</p></div>";
             }
 
-            // Amount comes in Kobo (if NGN) or cents, so we divide by 100
             $metadata = $tranx->data->metadata ?? null;
             $creditedAmount = isset($metadata->invoice_amount) ? (float)$metadata->invoice_amount : ($tranx->data->amount / 100);
+
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Amount: $creditedAmount\n", FILE_APPEND);
 
             // Check if we already recorded this reference to prevent double-crediting
             $db = \App\Core\Database::getInstance();
             $stmt = $db->prepare("SELECT id FROM invoice_payments WHERE reference = ?");
             $stmt->execute([$reference]);
             if ($stmt->fetch()) {
-                // Already processed
+                file_put_contents($logFile, date('Y-m-d H:i:s') . " - Already processed, redirecting\n", FILE_APPEND);
                 $response->redirect('/billing/receipt/' . $invoiceId);
                 return '';
             }
 
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Adding payment\n", FILE_APPEND);
             Invoice::addPayment($invoiceId, $creditedAmount, date('Y-m-d'), 'Online', $reference, "Paystack transaction: " . $reference);
             
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Redirecting to receipt\n", FILE_APPEND);
             // Redirect to the receipt or the updated invoice
             $response->redirect('/billing/receipt/' . $invoiceId);
             return '';
             
         } catch (\Throwable $e) {
-            return "<div style='font-family:sans-serif; text-align:center; padding: 50px;'><h2>System Error</h2><p>An internal error occurred: " . htmlspecialchars($e->getMessage()) . "</p></div>";
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - CATCH THROWABLE: " . $e->getMessage() . "\n", FILE_APPEND);
+            return "<div style='font-family:sans-serif; text-align:center; padding: 50px; background:white;'><h2>System Error</h2><p>An internal error occurred: " . htmlspecialchars($e->getMessage()) . "</p></div>";
         }
     }
 }
