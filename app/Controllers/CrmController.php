@@ -58,7 +58,8 @@ class CrmController extends AdminController {
         $message = $request->post('message');
         
         if (empty($type) || empty($message)) {
-            $this->session->setFlash('error', 'Campaign type and message are required.');
+            $session = new \App\Core\Session();
+            $session->setFlash('error', 'Campaign type and message are required.');
             $response->redirect('/admin/crm/campaigns');
             return;
         }
@@ -83,7 +84,7 @@ class CrmController extends AdminController {
             foreach ($customers as $customer) {
                 if (!empty($customer['email'])) {
                     $htmlContent = "<div style='font-family:sans-serif; max-width:600px; margin:0 auto;'><h2>Hello {$customer['name']},</h2><p>" . nl2br(e($message)) . "</p></div>";
-                    \App\Core\Mailer::send('info@isecltd.ng', $customer['email'], $subject, $htmlContent, 'ISEC Limited');
+                    \App\Helpers\Mailer::send('info@isecltd.ng', $customer['email'], $subject, $htmlContent, 'ISEC Limited');
                     $successCount++;
                 }
             }

@@ -9,12 +9,12 @@
 
 require_once __DIR__ . '/app/config/config.php';
 require_once __DIR__ . '/app/Core/Database.php';
-require_once __DIR__ . '/app/Core/Mailer.php';
+require_once __DIR__ . '/app/Helpers/Mailer.php';
 require_once __DIR__ . '/app/Models/Settings.php';
 require_once __DIR__ . '/app/Helpers/SmsHelper.php';
 
 use App\Core\Database;
-use App\Core\Mailer;
+use App\Helpers\Mailer;
 use App\Models\Settings;
 use App\Helpers\SmsHelper;
 

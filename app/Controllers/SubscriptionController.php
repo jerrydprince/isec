@@ -8,7 +8,7 @@ use App\Core\Session;
 use App\Models\AuditLog;
 use App\Core\Database;
 use App\Models\Settings;
-use App\Core\Mailer;
+use App\Helpers\Mailer;
 use App\Helpers\SmsHelper;
 
 class SubscriptionController extends AdminController {
