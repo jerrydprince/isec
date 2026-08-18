@@ -61,7 +61,7 @@ class BillingController extends AdminController {
         }
 
         // Calculate Totals
-        $subtotal = 0;
+        $inclusiveTotal = 0;
         $itemsToInsert = [];
         for ($i = 0; $i < count($descriptions); $i++) {
             $desc = trim($descriptions[$i]);
@@ -69,7 +69,7 @@ class BillingController extends AdminController {
             $price = (float)($unitPrices[$i] ?? 0);
             if ($desc) {
                 $total = $qty * $price;
-                $subtotal += $total;
+                $inclusiveTotal += $total;
                 $itemsToInsert[] = [
                     'description' => $desc,
                     'quantity' => $qty,
@@ -79,16 +79,18 @@ class BillingController extends AdminController {
             }
         }
 
-        $taxAmount = $subtotal * ($taxRate / 100);
-        $totalAmount = $subtotal + $taxAmount;
+        $totalAmount = $inclusiveTotal;
+        $taxAmount = $totalAmount - ($totalAmount / (1 + ($taxRate / 100)));
+        $subtotal = $totalAmount - $taxAmount;
 
         $invoiceNumber = Invoice::generateInvoiceNumber();
 
         $invoiceId = Invoice::create([
-            'invoice_number' => $invoiceNumber,
             'client_name' => $clientName,
             'client_email' => $clientEmail,
             'client_address' => $clientAddress,
+            'project_id' => $projectId,
+            'invoice_number' => $invoiceNumber,
             'currency_code' => $currencyCode,
             'currency_symbol' => $currencySymbol,
             'issue_date' => $issueDate,
@@ -145,6 +147,7 @@ class BillingController extends AdminController {
         $clientName = trim($request->get('client_name'));
         $clientEmail = trim($request->get('client_email'));
         $clientAddress = trim($request->get('client_address'));
+        $projectId = $request->get('project_id');
         $currencyCode = trim($request->get('currency_code', 'NGN'));
         $currencySymbol = trim($request->get('currency_symbol', '₦'));
         $issueDate = $request->get('issue_date');
@@ -162,7 +165,7 @@ class BillingController extends AdminController {
             return;
         }
 
-        $subtotal = 0;
+        $inclusiveTotal = 0;
         $itemsToInsert = [];
         for ($i = 0; $i < count($descriptions); $i++) {
             $desc = trim($descriptions[$i]);
@@ -170,7 +173,7 @@ class BillingController extends AdminController {
             $price = (float)($unitPrices[$i] ?? 0);
             if ($desc) {
                 $total = $qty * $price;
-                $subtotal += $total;
+                $inclusiveTotal += $total;
                 $itemsToInsert[] = [
                     'description' => $desc,
                     'quantity' => $qty,
@@ -180,13 +183,15 @@ class BillingController extends AdminController {
             }
         }
 
-        $taxAmount = $subtotal * ($taxRate / 100);
-        $totalAmount = $subtotal + $taxAmount;
+        $totalAmount = $inclusiveTotal;
+        $taxAmount = $totalAmount - ($totalAmount / (1 + ($taxRate / 100)));
+        $subtotal = $totalAmount - $taxAmount;
 
         Invoice::update($id, [
             'client_name' => $clientName,
             'client_email' => $clientEmail,
             'client_address' => $clientAddress,
+            'project_id' => $projectId,
             'currency_code' => $currencyCode,
             'currency_symbol' => $currencySymbol,
             'issue_date' => $issueDate,

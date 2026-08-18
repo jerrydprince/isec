@@ -200,10 +200,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const taxRate = parseFloat(taxRateInput.value) || 0;
-        const tax = subtotal * (taxRate / 100);
-        const total = subtotal + tax;
+        const total = subtotal; // Because subtotal already includes tax
+        const tax = total - (total / (1 + (taxRate / 100)));
+        const baseSubtotal = total - tax;
 
-        subtotalDisplay.textContent = subtotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        subtotalDisplay.textContent = baseSubtotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         taxRateDisplay.textContent = taxRate;
         taxDisplay.textContent = tax.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         totalDisplay.textContent = total.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
