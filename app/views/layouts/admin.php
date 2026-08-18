@@ -238,7 +238,7 @@ $currentPath = $request->getPath();
                 <?php endif; ?>
 
                 <!-- Inject View -->
-                <?= $content ?? '' ?>
+                {{content}}
             </main>
         </div>
     </div>
