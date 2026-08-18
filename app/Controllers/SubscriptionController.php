@@ -242,10 +242,18 @@ class SubscriptionController extends AdminController {
         $sentCount = 0;
 
         if (in_array('Email', $channels) && !empty($sub['client_email'])) {
-            $templateKey = $templateType === '14_days' ? 'sub_email_14' : 'sub_email_0';
-            $defaultTpl = "Dear {client_name},\n\nThis is a reminder for your subscription: {service_name}.\nAmount Due: {cost}\nDue Date: {due_date}\n\nPlease ensure payment is made promptly.\n\nThank you.";
+            $templateKey = 'sub_email_' . $templateType;
+            if ($templateType === '14_days') $defaultTpl = "Dear {client_name},\n\nThis is a 14-day reminder for your subscription: {service_name}.\nAmount Due: {cost}\nDue Date: {due_date}\n\nPlease ensure payment is made promptly.\n\nThank you.";
+            elseif ($templateType === '7_days') $defaultTpl = "Dear {client_name},\n\nThis is a 7-day reminder for your subscription: {service_name}.\nAmount Due: {cost}\nDue Date: {due_date}\n\nPlease ensure payment is made promptly.\n\nThank you.";
+            elseif ($templateType === '0_days') $defaultTpl = "Dear {client_name},\n\nURGENT: Your subscription {service_name} is due TODAY.\nAmount Due: {cost}\nDue Date: {due_date}\n\nPlease ensure payment is made immediately to avoid disruption.\n\nThank you.";
+            else $defaultTpl = "Dear {client_name},\n\nYour subscription {service_name} is OVERDUE.\nAmount Due: {cost}\nOriginal Due Date: {due_date}\n\nPlease pay immediately.\n\nThank you.";
+            
             $body = strtr(Settings::get($templateKey, $defaultTpl), $replacements);
-            $subject = $templateType === '14_days' ? "Upcoming Renewal: {$sub['service_name']}" : "URGENT Renewal: {$sub['service_name']}";
+            
+            if ($templateType === '14_days') $subject = "Upcoming Renewal (14 Days): {$sub['service_name']}";
+            elseif ($templateType === '7_days') $subject = "Upcoming Renewal (7 Days): {$sub['service_name']}";
+            elseif ($templateType === '0_days') $subject = "URGENT Renewal (Due Today): {$sub['service_name']}";
+            else $subject = "OVERDUE Subscription: {$sub['service_name']}";
             
             // Format as HTML since Mailer uses HTML content-type
             $htmlBody = "<h3>$subject</h3><p>" . nl2br($body) . "</p>";
@@ -254,16 +262,20 @@ class SubscriptionController extends AdminController {
         }
 
         if (in_array('SMS', $channels) && !empty($sub['client_phone'])) {
-            $templateKey = $templateType === '14_days' ? 'sub_sms_14' : 'sub_sms_0';
-            $defaultTpl = "Reminder: Your subscription {service_name} of {cost} is due on {due_date}. Please pay promptly. - ISEC";
+            $templateKey = 'sub_sms_' . $templateType;
+            if ($templateType === 'overdue') $defaultTpl = "URGENT: Your subscription {service_name} of {cost} is OVERDUE. Please pay immediately. - ISEC";
+            else $defaultTpl = "Reminder: Your subscription {service_name} of {cost} is due on {due_date}. Please pay promptly. - ISEC";
+            
             $body = strtr(Settings::get($templateKey, $defaultTpl), $replacements);
             SmsHelper::sendSms($sub['client_phone'], $body);
             $sentCount++;
         }
 
         if (in_array('WhatsApp', $channels) && !empty($sub['client_phone'])) {
-            $templateKey = $templateType === '14_days' ? 'sub_wa_14' : 'sub_wa_0';
-            $defaultTpl = "Hello {client_name}, this is a reminder for your subscription {service_name}. Amount Due: {cost} on {due_date}.";
+            $templateKey = 'sub_wa_' . $templateType;
+            if ($templateType === 'overdue') $defaultTpl = "URGENT {client_name}, your subscription {service_name} is OVERDUE. Amount Due: {cost}. Please pay immediately to avoid disruption.";
+            else $defaultTpl = "Hello {client_name}, this is a reminder for your subscription {service_name}. Amount Due: {cost} on {due_date}.";
+            
             $body = strtr(Settings::get($templateKey, $defaultTpl), $replacements);
             SmsHelper::sendWhatsApp($sub['client_phone'], $body);
             $sentCount++;
