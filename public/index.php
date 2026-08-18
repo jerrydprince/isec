@@ -170,6 +170,8 @@ $router->get('/admin/logs', [\App\Controllers\AdminController::class, 'logs'], [
 
 // Admin CRM & Marketing
 $router->get('/admin/crm', [\App\Controllers\CrmController::class, 'index'], [AuthMiddleware::class]);
+$router->post('/admin/crm/customer-store', [\App\Controllers\CrmController::class, 'customerStore'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/crm/customer-delete/{id}', [\App\Controllers\CrmController::class, 'customerDelete'], [AuthMiddleware::class]);
 $router->get('/admin/crm/campaigns', [\App\Controllers\CrmController::class, 'campaigns'], [AuthMiddleware::class]);
 $router->post('/admin/crm/campaigns/send', [\App\Controllers\CrmController::class, 'sendCampaign'], [AuthMiddleware::class, CSRFMiddleware::class]);
 
@@ -180,6 +182,15 @@ $router->post('/admin/accounting/expenses/store', [\App\Controllers\AccountingCo
 $router->get('/admin/accounting/expenses/delete/{id}', [\App\Controllers\AccountingController::class, 'deleteExpense'], [AuthMiddleware::class]);
 $router->get('/admin/accounting/statement', [\App\Controllers\AccountingController::class, 'statement'], [AuthMiddleware::class]);
 $router->get('/admin/accounting/reports', [\App\Controllers\AccountingController::class, 'reports'], [AuthMiddleware::class]);
+
+// Admin Subscriptions Management
+$router->get('/admin/subscriptions', [\App\Controllers\SubscriptionController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/admin/subscriptions/create', [\App\Controllers\SubscriptionController::class, 'create'], [AuthMiddleware::class]);
+$router->post('/admin/subscriptions/create', [\App\Controllers\SubscriptionController::class, 'store'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/subscriptions/edit/{id}', [\App\Controllers\SubscriptionController::class, 'edit'], [AuthMiddleware::class]);
+$router->post('/admin/subscriptions/edit/{id}', [\App\Controllers\SubscriptionController::class, 'update'], [AuthMiddleware::class, CSRFMiddleware::class]);
+$router->get('/admin/subscriptions/delete/{id}', [\App\Controllers\SubscriptionController::class, 'delete'], [AuthMiddleware::class]);
+$router->post('/admin/subscriptions/remind', [\App\Controllers\SubscriptionController::class, 'sendReminder'], [AuthMiddleware::class, CSRFMiddleware::class]);
 
 // 4. Run Application
 $app->run();

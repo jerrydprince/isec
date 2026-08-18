@@ -156,6 +156,38 @@ use App\Models\Settings;
                 </div>
             </div>
 
+            <h3 class="font-bold text-sm text-slate-800 border-b pb-2 pt-6"><i class="fa-solid fa-bell text-indigo-500 mr-2"></i> Subscription Reminder Templates (14 Days & Due Date)</h3>
+            <div class="text-xs text-slate-500 bg-indigo-50 p-3 rounded-lg border border-indigo-100 mb-4">
+                <i class="fa-solid fa-circle-info mr-1"></i> <b>Available Variables:</b> <code>{client_name}</code>, <code>{service_name}</code>, <code>{due_date}</code>, <code>{cost}</code>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">14-Days Email Template</label>
+                    <textarea name="sub_email_14" rows="4" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none text-slate-850"><?= e(Settings::get('sub_email_14', "Dear {client_name},\n\nThis is a friendly reminder that your subscription for {service_name} will expire on {due_date}. The renewal cost is {cost}.\n\nPlease arrange for payment to avoid service disruption.\n\nThank you!")) ?></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Due-Date Email Template</label>
+                    <textarea name="sub_email_0" rows="4" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none text-slate-850"><?= e(Settings::get('sub_email_0', "Dear {client_name},\n\nYour subscription for {service_name} expires TODAY ({due_date}). The renewal cost is {cost}.\n\nImmediate payment is required to maintain your service.\n\nThank you!")) ?></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">14-Days SMS Template</label>
+                    <textarea name="sub_sms_14" rows="3" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none text-slate-850"><?= e(Settings::get('sub_sms_14', "Reminder: Your {service_name} subscription expires on {due_date}. Renewal fee: {cost}. Please arrange payment.")) ?></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Due-Date SMS Template</label>
+                    <textarea name="sub_sms_0" rows="3" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none text-slate-850"><?= e(Settings::get('sub_sms_0', "URGENT: Your {service_name} expires TODAY. Please pay {cost} immediately to avoid disruption.")) ?></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">14-Days WhatsApp Template</label>
+                    <textarea name="sub_wa_14" rows="3" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none text-slate-850"><?= e(Settings::get('sub_wa_14', "Hello {client_name}! ⏳ Your {service_name} subscription is due for renewal on *{due_date}*. The cost is *{cost}*.\n\nPlease process payment soon to avoid downtime.")) ?></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Due-Date WhatsApp Template</label>
+                    <textarea name="sub_wa_0" rows="3" class="w-full bg-slate-50 border border-slate-200 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs outline-none text-slate-850"><?= e(Settings::get('sub_wa_0', "Hello {client_name}! ⚠️ Your {service_name} subscription expires *TODAY*. Please process your payment of *{cost}* immediately.")) ?></textarea>
+                </div>
+            </div>
+
             <hr class="border-slate-100">
 
             <div class="flex justify-end gap-3">

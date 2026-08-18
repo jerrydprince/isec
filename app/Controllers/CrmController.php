@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Core\Request;
 use App\Core\Response;
 use App\Models\Payment;
+use App\Models\AuditLog;
+use App\Helpers\SmsHelper;
 use PDO;
 
 class CrmController extends AdminController {
@@ -87,19 +89,17 @@ class CrmController extends AdminController {
             }
             $status = 'Sent';
         } else if ($type === 'SMS') {
-            // Stub for Termii SMS API
             foreach ($customers as $customer) {
                 if (!empty($customer['phone'])) {
-                    $this->sendTermiiSms($customer['phone'], $message);
+                    SmsHelper::sendSms($customer['phone'], $message);
                     $successCount++;
                 }
             }
             $status = 'Sent';
         } else if ($type === 'WhatsApp') {
-            // Stub for Termii WhatsApp API
             foreach ($customers as $customer) {
                 if (!empty($customer['phone'])) {
-                    $this->sendTermiiWhatsApp($customer['phone'], $message);
+                    SmsHelper::sendWhatsApp($customer['phone'], $message);
                     $successCount++;
                 }
             }
@@ -109,41 +109,52 @@ class CrmController extends AdminController {
         // Update campaign status
         $db->prepare("UPDATE campaigns SET status = ? WHERE id = ?")->execute([$status, $campaignId]);
 
-        $this->session->setFlash('success', "Campaign ($type) successfully sent to $successCount customers.");
+        $session = new \App\Core\Session();
+        $session->setFlash('success', "Campaign ($type) successfully sent to $successCount customers.");
         $response->redirect('/admin/crm/campaigns');
     }
-    
-    private function sendTermiiSms(string $phone, string $message): bool {
-        // TODO: Implement actual Termii API call for SMS
-        // Example:
-        // $url = "https://api.ng.termii.com/api/sms/send";
-        // $data = [
-        //     "to" => $phone,
-        //     "from" => "ISEC",
-        //     "sms" => $message,
-        //     "type" => "plain",
-        //     "channel" => "generic",
-        //     "api_key" => "TERMII_API_KEY"
-        // ];
+    public function customerStore(Request $request, Response $response): void {
+        $this->checkPermission('manage_settings');
+        $session = new \App\Core\Session();
+        $name = trim($request->get('name'));
+        $email = trim($request->get('email'));
+        $phone = trim($request->get('phone'));
+
+        if (empty($name) || empty($email)) {
+            $session->setFlash('error', 'Name and Email are required.');
+            $response->redirect('/admin/crm');
+            return;
+        }
+
+        $db = Payment::getDB();
         
-        error_log("STUB: Sending Termii SMS to $phone: $message");
-        return true;
+        // Check if email already exists
+        $stmt = $db->prepare("SELECT id FROM customers WHERE email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->fetch()) {
+            $session->setFlash('error', 'A customer with this email already exists.');
+            $response->redirect('/admin/crm');
+            return;
+        }
+
+        $stmt = $db->prepare("INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)");
+        $stmt->execute([$name, $email, $phone]);
+
+        AuditLog::log(current_user()['id'], 'Create Customer', "Added new CRM customer: $name");
+        $session->setFlash('success', 'Client added successfully.');
+        $response->redirect('/admin/crm');
     }
-    
-    private function sendTermiiWhatsApp(string $phone, string $message): bool {
-        // TODO: Implement actual Termii API call for WhatsApp
-        // Example:
-        // $url = "https://api.ng.termii.com/api/sms/send";
-        // $data = [
-        //     "to" => $phone,
-        //     "from" => "ISEC",
-        //     "sms" => $message,
-        //     "type" => "plain",
-        //     "channel" => "whatsapp",
-        //     "api_key" => "TERMII_API_KEY"
-        // ];
+
+    public function customerDelete(Request $request, Response $response, array $params): void {
+        $this->checkPermission('manage_settings');
+        $session = new \App\Core\Session();
+        $id = (int)($params['id'] ?? 0);
         
-        error_log("STUB: Sending Termii WhatsApp to $phone: $message");
-        return true;
+        $db = Payment::getDB();
+        $db->prepare("DELETE FROM customers WHERE id = ?")->execute([$id]);
+        
+        AuditLog::log(current_user()['id'], 'Delete Customer', "Deleted CRM customer ID: $id");
+        $session->setFlash('success', 'Client deleted successfully.');
+        $response->redirect('/admin/crm');
     }
 }
