@@ -56,6 +56,32 @@
                         <?php foreach ($subscriptions as $sub): 
                             $daysLeft = (strtotime($sub['next_due_date']) - time()) / (60 * 60 * 24);
                             $isExpiringSoon = $daysLeft > 0 && $daysLeft <= 14 && $sub['status'] == 'Active';
+                            
+                            // Calculate progress bar percentage (remaining time)
+                            $dueDateTs = strtotime($sub['next_due_date']);
+                            $startDateTs = !empty($sub['start_date']) ? strtotime($sub['start_date']) : strtotime('-1 year', $dueDateTs);
+                            $currentTs = time();
+                            
+                            $totalDuration = $dueDateTs - $startDateTs;
+                            if ($totalDuration <= 0) $totalDuration = 1; // Prevent division by zero
+                            
+                            if ($currentTs >= $dueDateTs) {
+                                $percentRemaining = 0; // Empty
+                            } elseif ($currentTs <= $startDateTs) {
+                                $percentRemaining = 100; // Full
+                            } else {
+                                $elapsed = $currentTs - $startDateTs;
+                                $percentRemaining = max(0, min(100, 100 - ($elapsed / $totalDuration * 100)));
+                            }
+                            
+                            // Determine bar color based on remaining time
+                            if ($percentRemaining > 50) {
+                                $barColor = 'bg-emerald-500';
+                            } elseif ($percentRemaining > 15) {
+                                $barColor = 'bg-amber-500';
+                            } else {
+                                $barColor = 'bg-rose-500';
+                            }
                         ?>
                             <tr class="hover:bg-slate-50 transition-colors <?= $isExpiringSoon ? 'bg-amber-50/30' : '' ?>">
                                 <td class="px-6 py-4">
@@ -82,6 +108,12 @@
                                     <?php if ($isExpiringSoon): ?>
                                         <div class="text-[10px] font-bold text-amber-600 uppercase tracking-wider mt-1"><i class="fa-solid fa-clock mr-1"></i> Due Soon</div>
                                     <?php endif; ?>
+                                    
+                                    <!-- Subscription Progress Bar -->
+                                    <div class="w-full bg-slate-200 rounded-full h-1.5 mt-2.5 overflow-hidden shadow-inner group relative" title="<?= number_format($percentRemaining, 1) ?>% time remaining">
+                                        <div class="<?= $barColor ?> h-1.5 rounded-full transition-all duration-1000 ease-out" style="width: <?= $percentRemaining ?>%"></div>
+                                    </div>
+                                    <div class="text-[9px] text-slate-400 mt-1 font-mono text-right"><?= floor($daysLeft > 0 ? $daysLeft : 0) ?> days left</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <?php if ($sub['status'] === 'Active'): ?>
